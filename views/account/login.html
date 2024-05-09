@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    {{template "widgets/head.html" .}}
+        <style>
+            h3{font-size: 20px;font-weight: normal;margin: 15px auto;}.login .login-body{padding-bottom: 5px;}
+        </style>
+</head>
+<body class="manual-container">
+<header class="navbar navbar-static-top smart-nav navbar-fixed-top manual-header" role="banner">
+    <div class="container">
+        <div class="navbar-header col-sm-12 col-md-6 col-lg-5">
+            <a href="/" class="navbar-brand" title="{{.SITE_NAME}}">
+                <img class="logo" src="/static/images/logo.png" alt="{{.SITE_NAME}}">
+            </a>
+        </div>
+    </div>
+</header>
+<div class="container manual-body">
+    <div class="row login">
+        <div class="col-xs-12">
+                <div class="login-body">
+                        <form role="form" method="post">
+                            <h3>用户登录</h3>
+                            <div class="help-block"><small>分享知识，共享智慧！知识，因分享，传承久远。</small></div>
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-user"></i>
+                                    </div>
+                                    <input type="text" class="form-control" placeholder="用户名或邮箱" name="account" id="account" autocomplete="off">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-lock"></i>
+                                    </div>
+                                    <input type="password" class="form-control" placeholder="密码" name="password" id="password" autocomplete="off">
+                                </div>
+                            </div>
+                            {{if .CaptchaOn}}
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-check-square"></i>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="验证码" name="captcha" autocomplete="off">
+                                    </div>
+                                </div>
+                            {{create_captcha}}
+                            {{end}}
+                            <div class="form-group mgt-15px">
+                                <button type="button" id="btn-login" class="btn btn-success" style="width: 100%"  data-loading-text="正在登录..." autocomplete="off">立即登录</button>
+                            </div>
+                            {{if eq .ENABLED_REGISTER "true"}}
+                            <div class="form-group">
+                                <div class="help-block">
+                                    <span>没有账号？ <a href="{{urlfor "AccountController.Oauth" ":oauth" "email"}}" title="使用邮箱注册" class="tooltips text-primary">邮箱注册</a></span>
+                                    <span class="pull-right"> 忘记密码？<a href="{{urlfor "AccountController.FindPassword"}}" title="找回密码" class="tooltips text-primary">找回密码</a></span>
+                                </div>
+                                {{if $.OauthLogin}}
+                                <hr>
+                                <div class="help-block">您还可以使用以下方式一键登录</div>
+                                <div class="login-by-third">
+
+                                    {{if $.LoginQQ}}
+                                    <a class="tooltips" href="https://graph.qq.com/oauth2.0/authorize?client_id={{.QQClientId}}&redirect_uri={{.QQCallback}}&response_type=code&state=itshujia.com{{.RandomStr}}" rel="nofollow" title="使用QQ一键登录">
+                                        <img src="/static/images/qq.png" alt="QQ">
+                                    </a>
+                                    {{end}}
+                                    {{if $.LoginGitHub}}
+                                        <a class="tooltips" href="https://github.com/login/oauth/authorize?client_id={{.GithubClientId}}&redirect_uri={{.GithubCallback}}" rel="nofollow" title="使用GitHub一键登录">
+                                            <img src="/static/images/github.png" alt="GitHub">
+                                        </a>
+                                    {{end}}
+                                    {{if $.LoginGitee}}
+                                        <a class="tooltips" rel="nofollow" title="使用码云(Gitee)一键登录" href="https://gitee.com/oauth/authorize?client_id={{.GiteeClientId}}&redirect_uri={{.GiteeCallback}}&response_type=code">
+                                            <img src="/static/images/gitee.png" alt="码云(Gitee)">
+                                        </a>
+                                    {{end}}
+                                </div>
+                                {{end}}
+                            </div>
+                            {{end}}
+                        </form>
+                    </div>
+        </div>
+        
+    </div>
+    <div class="clearfix"></div>
+</div>
+{{template "widgets/footer.html" .}}
+<script src="{{$.StaticDomain}}/static/layer/layer.js" type="text/javascript"></script>
+<script type="text/javascript">
+    $(function () {
+        $("#account,#passwd,#code").on('focus',function () {
+            $(this).tooltip('destroy').parents('.form-group').removeClass('has-error');;
+        });
+
+        $(document).keydown(function (e) {
+            var event = document.all ? window.event : e;
+            if(event.keyCode === 13){
+                $("#btn-login").click();
+            }
+        });
+        $("#btn-login").on('click',function () {
+            var $btn = $(this).button('loading');
+
+            var account = $.trim($("#account").val());
+            var password = $.trim($("#password").val());
+            var code = $("[name=captcha]").val();
+            if(account === ""){
+                layer.msg("账号不能为空");
+                $btn.button('reset');
+                return false;
+
+            }else if(password === ""){
+                layer.msg("密码不能为空");
+                $btn.button('reset');
+                return false;
+            }else if(code !== undefined && code === ""){
+                layer.msg("验证码不能为空");
+                $btn.button('reset');
+                return false;
+            }else{
+                $.ajax({
+                    url : "{{urlfor "AccountController.Login"}}",
+                    data : $("form").serializeArray(),
+                    dataType : "json",
+                    type : "POST",
+                    success : function (res) {
+                        if(res.errcode !== 0){
+                            $("[name=captcha]").val('');
+                            layer.msg(res.message);
+                            $btn.button('reset');
+                            $(".captcha img").trigger("click");
+                        }else{
+                            window.location = "/";
+                        }
+
+                    },
+                    error :function () {
+                        $("#captcha-img").click();
+                        $("#code").val('');
+                        layer.msg('系统错误');
+                        $btn.button('reset');
+                    }
+                });
+            }
+
+
+            return false;
+        });
+    });
+</script>
+</body>
+</html>

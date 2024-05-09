@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    {{template "widgets/head.html" .}}
+</head>
+<body>
+<div class="manual-reader manual-container">
+    {{template "widgets/header.html" .}}
+    <div class="container manual-body">
+        <div class="row visible-xs" style="margin:30px 0px 15px 0px;">
+            <form method="get" action="{{urlfor "SearchController.Result"}}" class="search-form">
+                <div class="input-group input-group-lg">
+                    <input type="text" name="wd" placeholder="Search..." class="form-control">
+                    <span class="input-group-addon"><i class="fa fa-search"></i><span class="hidden-xs"> 搜索</span></span>
+                </div>
+            </form>
+        </div>
+        <div class="row">
+            <div class="col-xs-12 mgt-15px" style="line-height: 200%;">
+                {{if (ads "explore-under-nav" $.IsMobile)}}
+                    <div class="ap ap-explore-under-nav mgb-15px">
+                        {{str2html (ads "explore-under-nav" $.IsMobile)}}
+                    </div>
+                {{end}}
+                <div class="help-block lang-explore" style="margin: 10px 0px 0;">
+                    <span class="text-muted">语种：</span>
+                    <a {{if eq $.Lang ""}}class="active"{{end}} href="{{urlfor "HomeController.Index"}}?tab={{$.Tab}}&cid={{$.Cid}}" title="不限">不限</a>
+                    <a {{if eq $.Lang "zh"}}class="active"{{end}} href="{{urlfor "HomeController.Index"}}?tab={{$.Tab}}&cid={{$.Cid}}&lang=zh" title="中文">中文</a>
+                    <a {{if eq $.Lang "en"}}class="active"{{end}} href="{{urlfor "HomeController.Index"}}?tab={{$.Tab}}&cid={{$.Cid}}&lang=en" title="英文">英文</a>
+                    <a {{if eq $.Lang "other"}}class="active"{{end}} href="{{urlfor "HomeController.Index"}}?tab={{$.Tab}}&cid={{$.Cid}}&lang=other" title="其他">其他</a>
+                </div>
+                {{if .Cates}}
+                    <div class="help-block lang-explore" style="margin: 10px 0 15px;">
+                        <span class="text-muted">分类：</span>
+                            <a {{if eq $.Cid 0}}class="active"{{end}} href="{{urlfor "HomeController.Index"}}?tab={{$.Tab}}&lang={{$.Lang}}" title="不限">不限</a>
+                            {{range .Cates}}
+                            {{if and (eq .Pid 0) (gt .Cnt 0)}}
+                                <a {{if eq $.Pid .Id}}class="active"{{end}} href="{{urlfor "HomeController.Index"}}?tab={{$.Tab}}&cid={{.Id}}&lang={{$.Lang}}" title="{{.Title}}">{{.Title}}</a>
+                            {{end}}
+                            {{end}}
+
+                        {{if gt $.Cid 0}}
+                            <div class="help-block" style="text-indent: 45px;">
+                            {{range .Cates}}
+                            {{if and (eq .Pid $.Pid) (gt .Cnt 0)}}
+                                <a {{if eq $.Cid .Id}}class="active"{{end}} href="{{urlfor "HomeController.Index"}}?tab={{$.Tab}}&cid={{.Id}}&lang={{$.Lang}}" title="{{.Title}}">{{.Title}}</a>
+                            {{end}}
+                            {{end}}
+                            </div>
+                        {{end}}
+                    </div>
+                {{end}}
+
+                {{if .Cate.Intro}}
+                    <div class="cate-intro">
+                        <div>{{.Cate.Title}}，{{.Cate.Intro}}</div>
+                    </div>
+                {{end}}
+
+                <ul class="nav nav-tabs">
+                    <li {{if eq $.Tab "latest"}}class="active"{{end}}><a href="{{urlfor "HomeController.Index"}}?tab=latest&cid={{$.Cid}}&lang={{$.Lang}}">最新<span class="hidden-xs">发布</span></a></li>
+                    <li {{if eq $.Tab "popular"}}class="active"{{end}}><a href="{{urlfor "HomeController.Index"}}?tab=popular&cid={{$.Cid}}&lang={{$.Lang}}">热门<span class="hidden-xs">书籍</span></a></li>
+                    <li {{if eq $.Tab "recommend"}}class="active"{{end}}><a href="{{urlfor "HomeController.Index"}}?tab=recommend&cid={{$.Cid}}&lang={{$.Lang}}" title="网站推荐"><span class="hidden-xs">网站</span>推荐</a></li>
+                    <li ><a href="{{urlfor "SettingController.Star"}}" target="_blank" class="text-red" title="我的收藏"><i class="fa fa-heart"></i> 我的收藏</a></li>
+{{/*                    {{if and (gt $.Member.MemberId 0) (eq .IsSignedToday false)}}*/}}
+{{/*                        <li ><a href="{{urlfor "UserController.Index" ":username" $.Member.Account}}" class="text-red" title="每日签到"><i class="fa fa-calendar-plus-o" aria-hidden="true"></i> 每日签到</a></li>*/}}
+{{/*                    {{end}}*/}}
+                </ul>
+            </div>
+
+
+
+        </div>
+        <div class="row">
+            <div class="manual-list">
+                {{range $index,$item := .Lists}}
+                {{/*<div class="list-item">*/}}
+
+                <div class="col-xs-6 col-sm-3 col-md-2">
+                    <dl class="manual-item-standard">
+                        <dt>
+                            <a class="clearfix tooltips {{if gt $item.OrderIndex 0}}recommend-book{{end}} {{if gt $item.Pin 0}}pin-book{{end}}" href="{{urlfor "DocumentController.Index" ":key" $item.Identify}}" title="{{$item.BookName}}" target="_blank" >
+                                <img class="img-responsive border-cover-img" onerror="this.src='/static/images/book.png'" src="{{showImg $item.Cover }}" class="cover" alt="{{$item.BookName}}">
+                            </a>
+                        </dt>
+                        <dd>
+                            <a href="{{urlfor "DocumentController.Index" ":key" $item.Identify}}" class="name tooltips" title="{{$item.BookName}}" target="_blank">{{$item.BookName}}</a>
+                        </dd>
+                        {{/*<dd>*/}}
+                            {{/*<span class="author">*/}}
+                                {{/*<b class="text">作者</b>*/}}
+                                {{/*<b class="text">-</b>*/}}
+                                {{/*<b class="text">{{$item.CreateName}}</b>*/}}
+                            {{/*</span>*/}}
+                        {{/*</dd>*/}}
+                    </dl>
+                </div>
+                {{end}}
+                <div class="clearfix"></div>
+            </div>
+            {{if (ads "explore-before-pagination" $.IsMobile)}}
+                    <div class="ap ap-explore-before-pagination">
+                        {{str2html (ads "explore-before-pagination" $.IsMobile)}}
+                    </div>
+            {{end}}
+            <nav class="pagination-container">
+                {{if gt .TotalPages 1}}
+                {{.PageHtml}}
+                {{end}}
+                <div class="clearfix"></div>
+            </nav>
+            {{if (ads "explore-under-pagination" $.IsMobile)}}
+                <div class="ap ap-explore-under-pagination">
+                    {{str2html (ads "explore-under-pagination" $.IsMobile)}}
+                </div>
+            {{end}}
+        </div>
+    </div>
+</div>
+{{template "widgets/footer.html" .}}
+</body>
+</html>

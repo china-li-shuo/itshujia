@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    {{template "widgets/head.html" .}}
+    <style>
+        .min-width{
+            min-width: 80px;
+        }
+    </style>
+</head>
+<body>
+<div class="manual-reader">
+    {{template "widgets/header.html" .}}
+    <div class="container manual-body">
+        <div class="row">
+            <div class="page-left">
+                {{template "manager/menu.html" .}}
+            </div>
+            <div class="page-right">
+                <div class="m-box">
+                    <div class="box-head">
+                        <strong class="box-title">仪表盘</strong>
+                    </div>
+                </div>
+                <div class="box-body manager">
+                    <a href="{{urlfor "ManagerController.Books"}}" class="dashboard-item">
+                        <span class="fa fa-book" aria-hidden="true"></span>
+                        <span class="fa-class">书籍数量</span>
+                        <span class="fa-class">{{.Model.BookNumber}}</span>
+                        <div>( <span class="text-danger">
+                                {{if gt .Model.BookNumberToday 1000}}
+                                    1000+
+                                {{else if gt .Model.BookNumberToday 0}}
+                                    +{{.Model.BookNumberToday}}
+                                {{else}}
+                                    0
+                                {{end}}
+                            </span> )</div>
+                    </a>
+                    <div class="dashboard-item">
+                        <span class="fa fa-file-text-o" aria-hidden="true"></span>
+                        <span class="fa-class">文章数量</span>
+                        <span class="fa-class">{{.Model.DocumentNumber}}</span>
+                        <div>( <span class="text-danger">
+                                {{if gt .Model.DocumentNumberToday 1000}}
+                                    1000+
+                                {{else if gt .Model.DocumentNumberToday 0}}
+                                    +{{.Model.DocumentNumberToday}}
+                                {{else}}
+                                    0
+                                {{end}}
+                            </span> )</div>
+                    </div>
+                    <a href="{{urlfor "ManagerController.Users"}}" class="dashboard-item">
+                            <span class="fa fa-users" aria-hidden="true"></span>
+                            <span class="fa-class">会员数量</span>
+                            <span class="fa-class">{{.Model.MemberNumber}}</span>
+                        <div>( <span class="text-danger">
+                                {{if gt .Model.MemberNumberToday 1000}}
+                                    1000+
+                                {{else if gt .Model.MemberNumberToday 0}}
+                                   +{{.Model.MemberNumberToday}}
+                                {{else}}
+                                    0
+                                {{end}}
+                            </span> )</div>
+                    </a>
+                    <a href="{{urlfor "ManagerController.Comments"}}" class="dashboard-item">
+                        <span class="fa fa-comments-o" aria-hidden="true"></span>
+                        <span class="fa-class">评论数量</span>
+                        <span class="fa-class">{{.Model.CommentNumber}}</span>
+                        <div>( <span class="text-danger">
+                                {{if gt .Model.CommentNumberToday 1000}}
+                                    1000+
+                                {{else if gt .Model.CommentNumberToday 0}}
+                                    +{{.Model.CommentNumberToday}}
+                                {{else}}
+                                    0
+                                {{end}}
+                            </span> )</div>
+                    </a>
+{{/*                    <a href="{{urlfor "ManagerController.AttachList" }}" class="dashboard-item">*/}}
+{{/*                        <span class="fa fa-cloud-download" aria-hidden="true"></span>*/}}
+{{/*                        <span class="fa-class">附件数量</span>*/}}
+{{/*                        <span class="fa-class">{{.Model.AttachmentNumber}}</span>*/}}
+{{/*                    </a>*/}}
+                </div>
+                <div>
+                    <table class="table table-bordered table-hover ">
+                        <caption>依赖检测</caption>
+                        <thead>
+                            <tr>
+                                <th class="min-width">名称</th>
+                                <th class="min-width">安装</th>
+                                <th>作用</th>
+                                <th>错误</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>supervisor <br>------<br> pm2 </td>
+                                <td>
+                                    <span class="text-danger">不检测</span>
+                                </td>
+                                <td>用于将程序加入系统守护进行。Linux可用supervisor，Windows可用pm2</td>
+                                <td>-</td>
+                            </tr>
+                            <tr>
+                                <td>elasticsearch</td>
+                                <td>
+                                    <span class="text-danger">不检测</span>
+                                </td>
+                                <td>内容全文搜索引擎。docker镜像：https://hub.docker.com/r/truthhun/elasticsearch</td>
+                                <td>-</td>
+                            </tr>
+                            {{range .Installed}}
+                            <tr>
+                                <td>{{.Name}}</td>
+                                <td>
+                                    {{if .IsInstalled}}
+                                        <span class="text-success">已安装</span>
+                                    {{else}}
+                                        <span class="text-danger">未安装</span>
+                                    {{end}}
+                                </td>
+                                <td>{{str2html .Message}}</td>
+                                <td>{{.Error}}</td>
+                            </tr>
+                            {{end}}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{/*<script src="/static/jquery/1.12.4/jquery.min.js" type="text/javascript"></script>*/}}
+<script src="/static/jquery/1.12.4/jquery.min.js" type="text/javascript"></script>
+{{/*<script src="/static/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>*/}}
+<script src="/static/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+</body>
+</html>

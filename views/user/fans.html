@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    {{template "widgets/head.html" .}}
+</head>
+<body>
+<div class="manual-reader manual-container">
+    {{template "widgets/header.html" .}}
+    <div class="ucenter">
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12 col-sm-4 col-md-3">
+                    {{template "user/base.html" .}}
+                </div>
+                <div class="col-xs-12 col-sm-8 col-md-9">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            {{template "user/tabs.html" .}}
+                        </div>
+                        <div class="col-xs-12">
+                    <div class="ucenter-content">
+                        {{range .Fans}}
+                        <div class="col-xs-4 col-sm-2 col-md-2 text-center fans-item">
+                            <a target="_blank" title="{{.Nickname}}" href="{{urlfor "UserController.Index" ":username" .Account}}" class="tooltips">
+                                <img class="thumbnail img-circle " src="{{showImg .Avatar}}" alt="">
+                            </a>
+                            <div>
+                                <a target="_blank" title="{{.Nickname}}" href="{{urlfor "UserController.Index" ":username" .Account}}"  class="fans-username tooltips">{{.Nickname}}</a>
+                            </div>
+                            <div>
+                                {{if eq $.Member.MemberId .Uid}}
+                                    <a href="javascipt:;" class="btn btn-default disabled btn-sm"><i class="fa fa-heart-o"></i> 关注Ta</a>
+                                {{else}}
+                                    {{if eq $.Tab "fans"}}
+                                        {{if (IsFollow .Uid $.Member.MemberId)}}
+                                        <a href="{{urlfor "BaseController.SetFollow" ":uid" .Uid}}" class="btn btn-default btn-sm btn-cancel"><i class="fa fa-heart text-danger"></i> 取消关注</a>
+                                        {{else}}
+                                        <a href="{{urlfor "BaseController.SetFollow" ":uid" .Uid}}" class="btn btn-success btn-sm btn-follow"><i class="fa fa-heart-o"></i> 关注Ta</a>
+                                        {{end}}
+                                    {{else}}
+                                        {{if (IsFollow .Uid $.Member.MemberId)}}
+                                        <a href="{{urlfor "BaseController.SetFollow" ":uid" .Uid}}" class="btn btn-default btn-sm btn-cancel"><i class="fa fa-heart text-danger"></i> 取消关注</a>
+                                        {{else}}
+                                        <a href="{{urlfor "BaseController.SetFollow" ":uid" .Uid}}" class="btn btn-success btn-sm btn-follow"><i class="fa fa-heart-o"></i> 关注Ta</a>
+                                        {{end}}
+                                    {{end}}
+
+                                {{end}}
+                            </div>
+
+                        </div>
+                        {{end}}
+
+
+                    </div>
+                </div>
+                <div class="pagination-container">
+                    {{.PageHtml}}
+                </div>
+            </div>
+        </div>
+            </div>
+        </div>
+    </div>
+</div>
+{{template "widgets/footer.html" .}}
+<script src="/static/js/main.js?version={{$.Version}}"></script>
+</body>
+</html>

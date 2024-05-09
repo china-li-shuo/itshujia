@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{.SeoTitle}} - {{.SITE_NAME}}</title>
+    <link href="{{$.StaticDomain}}/static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{{$.StaticDomain}}/static/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+
+    <link href="/static/css/main.css?version={{$.Version}}" rel="stylesheet">
+    <script src="{{$.StaticDomain}}/static/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="{{$.StaticDomain}}/static/respond.js/1.4.2/respond.min.js"></script>
+</head>
+<body id="page-rank">
+<div class="manual-container">
+    {{template "widgets/header.html" .}}
+    <div class="container manual-body">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="rank-head">
+                    <ul class="nav nav-tabs">
+                        <li {{if eq .Tab "all"}}class="active"{{end}}><a href="{{urlfor "RankController.Index"}}?tab=all">总榜</a></li>
+                        <li {{if eq .Tab "reading"}}class="active"{{end}}><a href="{{urlfor "RankController.Index"}}?tab=reading">时长<span class="hidden-xs">榜</span></a></li>
+                        <li {{if eq .Tab "sign"}}class="active"{{end}}><a href="{{urlfor "RankController.Index"}}?tab=sign">签到<span class="hidden-xs">榜</span></a></li>
+                        <li {{if eq .Tab "popular"}}class="active"{{end}}><a href="{{urlfor "RankController.Index"}}?tab=popular">人气<span class="hidden-xs">榜</span> </a></li>
+                        <li {{if eq .Tab "star"}}class="active"{{end}}><a href="{{urlfor "RankController.Index"}}?tab=star">收藏<span class="hidden-xs">榜</span></a></li>
+                        {{if and (gt $.Member.MemberId 0) (eq $.IsSignedToday false)}}
+                        <li class="hidden-xs"><a href="{{urlfor "UserController.Index" ":username" $.Member.Account}}" target="_blank" class="text-red" title="每日签到"><i class="fa fa-calendar-plus-o"></i> 每日签到</a></li>
+                        {{end}}
+                    </ul>
+                </div>
+                <div class="rank-body">
+                    {{if eq .Tab "all"}}
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-6 col-md-4">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">阅读时长榜 <small class="pull-right"><a href="{{urlfor "RankController.Index"}}?tab=reading" class="text-muted">更多>></a></small></div>
+                                <div class="panel-body">
+                                    <ul>
+                                        {{range $idx,$user:=.TotalReadingUsers}}
+                                            <li>
+                                                <a class="tooltips" href="{{urlfor "UserController.Index" ":username" $user.Account}}" target="_blank" title="{{$user.Nickname}}">
+                                                    <span class="rank-order rank-order-no{{add $idx 1}}">{{add $idx 1}}</span>
+                                                    <span class="rank-cont">{{$user.Nickname}}</span>
+                                                    <small class="pull-right">{{formatReadingTime $user.TotalReadingTime true}}</small>
+                                                </a>
+                                            </li>
+                                        {{end}}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-6 col-md-4">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">连续签到榜 <small class="pull-right"><a href="{{urlfor "RankController.Index"}}?tab=sign" class="text-muted">更多>></a></small></div>
+                                <div class="panel-body">
+                                    <ul>
+                                        {{range $idx,$user:=.ContinuousSignUsers}}
+                                            <li>
+                                                <a class="tooltips" href="{{urlfor "UserController.Index" ":username" $user.Account}}" target="_blank" title="{{$user.Nickname}}">
+                                                    <span class="rank-order rank-order-no{{add $idx 1}}">{{add $idx 1}}</span>
+                                                    <span class="rank-cont">{{$user.Nickname}}</span>
+                                                    <small class="pull-right">{{$user.TotalContinuousSign}} 天</small>
+                                                </a>
+                                            </li>
+                                        {{end}}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-6 col-md-4">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">本月签到榜 <small class="pull-right"><a href="{{urlfor "RankController.Index"}}?tab=sign" class="text-muted">更多>></a></small></div>
+                                <div class="panel-body">
+                                    <ul>
+                                        {{range $idx,$user:=.ThisMonthSign}}
+                                            <li>
+                                                <a class="tooltips" href="{{urlfor "UserController.Index" ":username" $user.Account}}" target="_blank" title="{{$user.Nickname}}">
+                                                    <span class="rank-order rank-order-no{{add $idx 1}}">{{add $idx 1}}</span>
+                                                    <span class="rank-cont">{{$user.Nickname}}</span>
+                                                    <small class="pull-right">{{$user.TotalSign}} 天</small>
+                                                </a>
+                                            </li>
+                                        {{end}}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-6 col-md-4">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">热门收藏榜 <small class="pull-right"><a href="{{urlfor "RankController.Index"}}?tab=star" class="text-muted">更多>></a></small></div>
+                                <div class="panel-body">
+                                    <ul>
+                                        {{range $idx,$book:=.StarBooks}}
+                                            <li>
+                                                <a class="tooltips" href="{{urlfor "DocumentController.Index" ":key" $book.Identify}}" target="_blank" title="{{$book.BookName}}">
+                                                    <span class="rank-order rank-order-no{{add $idx 1}}">{{add $idx 1}}</span>
+                                                    <span class="rank-cont">{{$book.BookName}}</span>
+                                                    <small class="pull-right">{{$book.Star}}</small>
+                                                </a>
+                                            </li>
+                                        {{end}}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-6 col-md-4">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">人气热读榜 <small class="pull-right"><a href="{{urlfor "RankController.Index"}}?tab=popular" class="text-muted">更多>></a></small></div>
+                                <div class="panel-body">
+                                    <ul>
+                                        {{range $idx,$book:=.VcntBooks}}
+                                            <li>
+                                                <a class="tooltips" href="{{urlfor "DocumentController.Index" ":key" $book.Identify}}" target="_blank" title="{{$book.BookName}}">
+                                                    <span class="rank-order rank-order-no{{add $idx 1}}">{{add $idx 1}}</span>
+                                                    <span class="rank-cont">{{$book.BookName}}</span>
+                                                    <small class="pull-right">{{$book.Vcnt}}</small>
+                                                </a>
+                                            </li>
+                                        {{end}}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-6 col-md-4">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">热门点评榜
+{{/*                                    <small class="pull-right"><a href="{{urlfor "RankController.Index"}}?tab=comment" class="text-muted">更多>></a></small>*/}}
+                                </div>
+                                <div class="panel-body">
+                                    <ul>
+                                        {{range $idx,$book:=.CommentBooks}}
+                                            <li>
+                                                <a class="tooltips" href="{{urlfor "DocumentController.Index" ":key" $book.Identify}}" target="_blank" title="{{$book.BookName}}">
+                                                    <span class="rank-order rank-order-no{{add $idx 1}}">{{add $idx 1}}</span>
+                                                    <span class="rank-cont">{{$book.BookName}}</span>
+                                                    <small class="pull-right">{{$book.CntComment}}</small>
+                                                </a>
+                                            </li>
+                                        {{end}}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {{end}}
+
+                    {{if eq .Tab "reading"}}
+                    <div class="row">
+                        {{if .TodayReading}}
+                            <div class="col-xs-12 col-sm-6 col-md-4">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">今日阅读</div>
+                                    <div class="panel-body">
+                                        <ul>
+                                            {{range $idx,$user:=.TodayReading}}
+                                                <li>
+                                                    <a class="tooltips" href="{{urlfor "UserController.Index" ":username" $user.Account}}" target="_blank" title="{{$user.Nickname}}">
+                                                        <span class="rank-order rank-order-no{{add $idx 1}}">{{add $idx 1}}</span>
+                                                        <span class="rank-cont">{{$user.Nickname}}</span>
+                                                        <small class="pull-right">{{formatReadingTime $user.SumTime true}}</small>
+                                                    </a>
+                                                </li>
+                                            {{end}}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        {{end}}
+
+                        {{if .WeekReading}}
+                        <div class="col-xs-12 col-sm-6 col-md-4">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">本周阅读</div>
+                                <div class="panel-body">
+                                    <ul>
+                                        {{range $idx,$user:=.WeekReading}}
+                                            <li>
+                                                <a class="tooltips" href="{{urlfor "UserController.Index" ":username" $user.Account}}" target="_blank" title="{{$user.Nickname}}">
+                                                    <span class="rank-order rank-order-no{{add $idx 1}}">{{add $idx 1}}</span>
+                                                    <span class="rank-cont">{{$user.Nickname}}</span>
+                                                    <small class="pull-right">{{formatReadingTime $user.SumTime true}}</small>
+                                                </a>
+                                            </li>
+                                        {{end}}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        {{end}}
+
+                        {{if .MonthReading}}
+                        <div class="col-xs-12 col-sm-6 col-md-4">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">本月阅读</div>
+                                <div class="panel-body">
+                                    <ul>
+                                        {{range $idx,$user:=.MonthReading}}
+                                            <li>
+                                                <a class="tooltips" href="{{urlfor "UserController.Index" ":username" $user.Account}}" target="_blank" title="{{$user.Nickname}}">
+                                                    <span class="rank-order rank-order-no{{add $idx 1}}">{{add $idx 1}}</span>
+                                                    <span class="rank-cont">{{$user.Nickname}}</span>
+                                                    <small class="pull-right">{{formatReadingTime $user.SumTime true}}</small>
+                                                </a>
+                                            </li>
+                                        {{end}}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        {{end}}
+
+                        {{if .LastWeekReading}}
+                            <div class="col-xs-12 col-sm-6 col-md-4">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">上周阅读</div>
+                                    <div class="panel-body">
+                                        <ul>
+                                            {{range $idx,$user:=.LastWeekReading}}
+                                                <li>
+                                                    <a class="tooltips" href="{{urlfor "UserController.Index" ":username" $user.Account}}" target="_blank" title="{{$user.Nickname}}">
+                                                        <span class="rank-order rank-order-no{{add $idx 1}}">{{add $idx 1}}</span>
+                                                        <span class="rank-cont">{{$user.Nickname}}</span>
+                                                        <small class="pull-right">{{formatReadingTime $user.SumTime true}}</small>
+                                                    </a>
+                                                </li>
+                                            {{end}}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        {{end}}
+
+                        {{if .LastMonthReading}}
+                        <div class="col-xs-12 col-sm-6 col-md-4">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">上月阅读</div>
+                                <div class="panel-body">
+                                    <ul>
+                                        {{range $idx,$user:=.LastMonthReading}}
+                                            <li>
+                                                <a class="tooltips" href="{{urlfor "UserController.Index" ":username" $user.Account}}" target="_blank" title="{{$user.Nickname}}">
+                                                    <span class="rank-order rank-order-no{{add $idx 1}}">{{add $idx 1}}</span>
+                                                    <span class="rank-cont">{{$user.Nickname}}</span>
+                                                    <small class="pull-right">{{formatReadingTime $user.SumTime true}}</small>
+                                                </a>
+                                            </li>
+                                        {{end}}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        {{end}}
+
+                        {{if .AllReading}}
+                            <div class="col-xs-12 col-sm-6 col-md-4">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">总阅读</div>
+                                    <div class="panel-body">
+                                        <ul>
+                                            {{range $idx,$user:=.AllReading}}
+                                                <li>
+                                                    <a class="tooltips" href="{{urlfor "UserController.Index" ":username" $user.Account}}" target="_blank" title="{{$user.Nickname}}">
+                                                        <span class="rank-order rank-order-no{{add $idx 1}}">{{add $idx 1}}</span>
+                                                        <span class="rank-cont">{{$user.Nickname}}</span>
+                                                        <small class="pull-right">{{formatReadingTime $user.SumTime true}}</small>
+                                                    </a>
+                                                </li>
+                                            {{end}}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        {{end}}
+
+                    </div>
+                    {{end}}
+
+                    {{if eq .Tab "sign"}}
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-6 col-md-4">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">累计签到榜</div>
+                                <div class="panel-body">
+                                    <ul>
+                                        {{range $idx,$user:=.TotalSignUsers}}
+                                            <li>
+                                                <a class="tooltips" href="{{urlfor "UserController.Index" ":username" $user.Account}}" target="_blank" title="{{$user.Nickname}}">
+                                                    <span class="rank-order rank-order-no{{add $idx 1}}">{{add $idx 1}}</span>
+                                                    <span class="rank-cont">{{$user.Nickname}}</span>
+                                                    <small class="pull-right">{{$user.TotalSign}} 天</small>
+                                                </a>
+                                            </li>
+                                        {{end}}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-6 col-md-4">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">连续签到榜</div>
+                                <div class="panel-body">
+                                    <ul>
+                                        {{range $idx,$user:=.ContinuousSignUsers}}
+                                            <li>
+                                                <a class="tooltips" href="{{urlfor "UserController.Index" ":username" $user.Account}}" target="_blank" title="{{$user.Nickname}}">
+                                                    <span class="rank-order rank-order-no{{add $idx 1}}">{{add $idx 1}}</span>
+                                                    <span class="rank-cont">{{$user.Nickname}}</span>
+                                                    <small class="pull-right">{{$user.TotalContinuousSign}} 天</small>
+                                                </a>
+                                            </li>
+                                        {{end}}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-6 col-md-4">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">历史最高连签榜</div>
+                                <div class="panel-body">
+                                    <ul>
+                                        {{range $idx,$user:=.HistoryContinuousSignUsers}}
+                                            <li>
+                                                <a class="tooltips" href="{{urlfor "UserController.Index" ":username" $user.Account}}" target="_blank" title="{{$user.Nickname}}">
+                                                    <span class="rank-order rank-order-no{{add $idx 1}}">{{add $idx 1}}</span>
+                                                    <span class="rank-cont">{{$user.Nickname}}</span>
+                                                    <small class="pull-right">{{$user.HistoryTotalContinuousSign}} 天</small>
+                                                </a>
+                                            </li>
+                                        {{end}}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-6 col-md-4">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">本月累计签到</div>
+                                <div class="panel-body">
+                                    <ul>
+                                        {{range $idx,$user:=.ThisMonthSign}}
+                                            <li>
+                                                <a class="tooltips" href="{{urlfor "UserController.Index" ":username" $user.Account}}" target="_blank" title="{{$user.Nickname}}">
+                                                    <span class="rank-order rank-order-no{{add $idx 1}}">{{add $idx 1}}</span>
+                                                    <span class="rank-cont">{{$user.Nickname}}</span>
+                                                    <small class="pull-right">{{$user.TotalSign}} 天</small>
+                                                </a>
+                                            </li>
+                                        {{end}}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-6 col-md-4">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">上月累计签到</div>
+                                <div class="panel-body">
+                                    <ul>
+                                        {{range $idx,$user:=.LastMonthSign}}
+                                            <li>
+                                                <a class="tooltips" href="{{urlfor "UserController.Index" ":username" $user.Account}}" target="_blank" title="{{$user.Nickname}}">
+                                                    <span class="rank-order rank-order-no{{add $idx 1}}">{{add $idx 1}}</span>
+                                                    <span class="rank-cont">{{$user.Nickname}}</span>
+                                                    <small class="pull-right">{{$user.TotalSign}} 天</small>
+                                                </a>
+                                            </li>
+                                        {{end}}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {{end}}
+
+                    {{if eq .Tab "popular"}}
+                        <div class="row">
+                            {{if .Today}}
+                                <div class="col-xs-12 col-sm-6 col-md-4">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading">今日人气</div>
+                                        <div class="panel-body">
+                                            <ul>
+                                                {{range $idx,$book:=.Today}}
+                                                    <li>
+                                                        <a class="tooltips" href="{{urlfor "DocumentController.Index" ":key" $book.Identify}}" target="_blank" title="{{$book.BookName}}">
+                                                            <span class="rank-order rank-order-no{{add $idx 1}}">{{add $idx 1}}</span>
+                                                            <span class="rank-cont">{{$book.BookName}}</span>
+                                                            <small class="pull-right">{{$book.Cnt}}</small>
+                                                        </a>
+                                                    </li>
+                                                {{end}}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            {{end}}
+
+                            {{if .Week}}
+                                <div class="col-xs-12 col-sm-6 col-md-4">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading">本周人气</div>
+                                        <div class="panel-body">
+                                            <ul>
+                                                {{range $idx,$book:=.Week}}
+                                                    <li>
+                                                        <a class="tooltips" href="{{urlfor "DocumentController.Index" ":key" $book.Identify}}" target="_blank" title="{{$book.BookName}}">
+                                                            <span class="rank-order rank-order-no{{add $idx 1}}">{{add $idx 1}}</span>
+                                                            <span class="rank-cont">{{$book.BookName}}</span>
+                                                            <small class="pull-right">{{$book.Cnt}}</small>
+                                                        </a>
+                                                    </li>
+                                                {{end}}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            {{end}}
+
+                            {{if .Month}}
+                                <div class="col-xs-12 col-sm-6 col-md-4">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading">本月人气</div>
+                                        <div class="panel-body">
+                                            <ul>
+                                                {{range $idx,$book:=.Month}}
+                                                    <li>
+                                                        <a class="tooltips" href="{{urlfor "DocumentController.Index" ":key" $book.Identify}}" target="_blank" title="{{$book.BookName}}">
+                                                            <span class="rank-order rank-order-no{{add $idx 1}}">{{add $idx 1}}</span>
+                                                            <span class="rank-cont">{{$book.BookName}}</span>
+                                                            <small class="pull-right">{{$book.Cnt}}</small>
+                                                        </a>
+                                                    </li>
+                                                {{end}}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            {{end}}
+
+                            {{if .LastWeek}}
+                                <div class="col-xs-12 col-sm-6 col-md-4">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading">上周人气</div>
+                                        <div class="panel-body">
+                                            <ul>
+                                                {{range $idx,$book:=.LastWeek}}
+                                                    <li>
+                                                        <a class="tooltips" href="{{urlfor "DocumentController.Index" ":key" $book.Identify}}" target="_blank" title="{{$book.BookName}}">
+                                                            <span class="rank-order rank-order-no{{add $idx 1}}">{{add $idx 1}}</span>
+                                                            <span class="rank-cont">{{$book.BookName}}</span>
+                                                            <small class="pull-right">{{$book.Cnt}}</small>
+                                                        </a>
+                                                    </li>
+                                                {{end}}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            {{end}}
+
+                            {{if .LastMonth}}
+                                <div class="col-xs-12 col-sm-6 col-md-4">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading">上月人气</div>
+                                        <div class="panel-body">
+                                            <ul>
+                                                {{range $idx,$book:=.LastMonth}}
+                                                    <li>
+                                                        <a class="tooltips" href="{{urlfor "DocumentController.Index" ":key" $book.Identify}}" target="_blank" title="{{$book.BookName}}">
+                                                            <span class="rank-order rank-order-no{{add $idx 1}}">{{add $idx 1}}</span>
+                                                            <span class="rank-cont">{{$book.BookName}}</span>
+                                                            <small class="pull-right">{{$book.Cnt}}</small>
+                                                        </a>
+                                                    </li>
+                                                {{end}}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            {{end}}
+
+                            {{if .All}}
+                                <div class="col-xs-12 col-sm-6 col-md-4">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading">总人气</div>
+                                        <div class="panel-body">
+                                            <ul>
+                                                {{range $idx,$book:=.All}}
+                                                    <li>
+                                                        <a class="tooltips" href="{{urlfor "DocumentController.Index" ":key" $book.Identify}}" target="_blank" title="{{$book.BookName}}">
+                                                            <span class="rank-order rank-order-no{{add $idx 1}}">{{add $idx 1}}</span>
+                                                            <span class="rank-cont">{{$book.BookName}}</span>
+                                                            <small class="pull-right">{{$book.Cnt}}</small>
+                                                        </a>
+                                                    </li>
+                                                {{end}}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            {{end}}
+
+                        </div>
+                    {{end}}
+
+
+                    {{if eq .Tab "star"}}
+                        <div class="row">
+                            {{if .Today}}
+                                <div class="col-xs-12 col-sm-6 col-md-4">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading">今日收藏</div>
+                                        <div class="panel-body">
+                                            <ul>
+                                                {{range $idx,$book:=.Today}}
+                                                    <li>
+                                                        <a class="tooltips" href="{{urlfor "DocumentController.Index" ":key" $book.Identify}}" target="_blank" title="{{$book.BookName}}">
+                                                            <span class="rank-order rank-order-no{{add $idx 1}}">{{add $idx 1}}</span>
+                                                            <span class="rank-cont">{{$book.BookName}}</span>
+                                                            <small class="pull-right">{{$book.Cnt}}</small>
+                                                        </a>
+                                                    </li>
+                                                {{end}}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            {{end}}
+
+                            {{if .Week}}
+                                <div class="col-xs-12 col-sm-6 col-md-4">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading">本周收藏</div>
+                                        <div class="panel-body">
+                                            <ul>
+                                                {{range $idx,$book:=.Week}}
+                                                    <li>
+                                                        <a class="tooltips" href="{{urlfor "DocumentController.Index" ":key" $book.Identify}}" target="_blank" title="{{$book.BookName}}">
+                                                            <span class="rank-order rank-order-no{{add $idx 1}}">{{add $idx 1}}</span>
+                                                            <span class="rank-cont">{{$book.BookName}}</span>
+                                                            <small class="pull-right">{{$book.Cnt}}</small>
+                                                        </a>
+                                                    </li>
+                                                {{end}}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            {{end}}
+
+                            {{if .Month}}
+                                <div class="col-xs-12 col-sm-6 col-md-4">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading">本月收藏</div>
+                                        <div class="panel-body">
+                                            <ul>
+                                                {{range $idx,$book:=.Month}}
+                                                    <li>
+                                                        <a class="tooltips" href="{{urlfor "DocumentController.Index" ":key" $book.Identify}}" target="_blank" title="{{$book.BookName}}">
+                                                            <span class="rank-order rank-order-no{{add $idx 1}}">{{add $idx 1}}</span>
+                                                            <span class="rank-cont">{{$book.BookName}}</span>
+                                                            <small class="pull-right">{{$book.Cnt}}</small>
+                                                        </a>
+                                                    </li>
+                                                {{end}}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            {{end}}
+
+                            {{if .LastWeek}}
+                                <div class="col-xs-12 col-sm-6 col-md-4">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading">上周收藏</div>
+                                        <div class="panel-body">
+                                            <ul>
+                                                {{range $idx,$book:=.LastWeek}}
+                                                    <li>
+                                                        <a class="tooltips" href="{{urlfor "DocumentController.Index" ":key" $book.Identify}}" target="_blank" title="{{$book.BookName}}">
+                                                            <span class="rank-order rank-order-no{{add $idx 1}}">{{add $idx 1}}</span>
+                                                            <span class="rank-cont">{{$book.BookName}}</span>
+                                                            <small class="pull-right">{{$book.Cnt}}</small>
+                                                        </a>
+                                                    </li>
+                                                {{end}}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            {{end}}
+
+                            {{if .LastMonth}}
+                                <div class="col-xs-12 col-sm-6 col-md-4">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading">上月收藏</div>
+                                        <div class="panel-body">
+                                            <ul>
+                                                {{range $idx,$book:=.LastMonth}}
+                                                    <li>
+                                                        <a class="tooltips" href="{{urlfor "DocumentController.Index" ":key" $book.Identify}}" target="_blank" title="{{$book.BookName}}">
+                                                            <span class="rank-order rank-order-no{{add $idx 1}}">{{add $idx 1}}</span>
+                                                            <span class="rank-cont">{{$book.BookName}}</span>
+                                                            <small class="pull-right">{{$book.Cnt}}</small>
+                                                        </a>
+                                                    </li>
+                                                {{end}}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            {{end}}
+
+                            {{if .All}}
+                                <div class="col-xs-12 col-sm-6 col-md-4">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading">总收藏</div>
+                                        <div class="panel-body">
+                                            <ul>
+                                                {{range $idx,$book:=.All}}
+                                                    <li>
+                                                        <a class="tooltips" href="{{urlfor "DocumentController.Index" ":key" $book.Identify}}" target="_blank" title="{{$book.BookName}}">
+                                                            <span class="rank-order rank-order-no{{add $idx 1}}">{{add $idx 1}}</span>
+                                                            <span class="rank-cont">{{$book.BookName}}</span>
+                                                            <small class="pull-right">{{$book.Cnt}}</small>
+                                                        </a>
+                                                    </li>
+                                                {{end}}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            {{end}}
+
+                        </div>
+                    {{end}}
+
+                </div>
+            </div>
+        </div>
+    </div>
+    {{template "widgets/footer.html" .}}
+</div>
+</body>
+</html>

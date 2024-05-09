@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+{{template "widgets/head.html" .}}
+    <style>
+        /* Styles for modal and overlay */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
+            display: none; /* Hide by default */
+            z-index: 9999; /* Ensure it's above other content */
+        }
+        .modal-content {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            z-index: 10000; /* Ensure it's above the overlay */
+        }
+    </style>
+</head>
+<body>
+<div class="manual-reader manual-container">
+{{template "widgets/header.html" .}}
+
+    <div class="container manual-body cate-list">
+
+        {{/*遮罩层start*/}}
+        <div class="modal-overlay" id="modalOverlay" style="display: none;"></div>
+        <div class="modal-content" id="modalContent" style="display: none; width: 600px; height: 500px;">
+            <h3>微信小程序阅读</h3>
+            <hr>
+            <div style="height: calc(100% - 80px); overflow: auto;">
+                <!-- Modal content -->
+                <img src="/projects/help/202404/17c42927977e34ac.jpeg" alt="Image" style="max-width: 100%; max-height: 100%; display: block; margin: 0 auto;">
+                <hr>
+            </div>
+            <!-- Button to close modal with custom style -->
+            <button onclick="closeModal()" style="position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); background-color: #f44336; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">关闭窗口</button>
+        </div>
+
+        {{/* 遮罩层end*/}}
+
+        <div class="row visible-xs" style="margin:15px 0px 30px 0px;">
+            <form method="get" action="{{urlfor "SearchController.Result"}}" class="search-form">
+                <div class="input-group input-group-lg">
+                    <input type="text" name="wd" placeholder="Search..." class="form-control">
+                    <span class="input-group-addon"><i class="fa fa-search"></i><span class="hidden-xs"> 搜索</span></span>
+                </div>
+            </form>
+        </div>
+        {{if .Recommends}}
+            <div class="panel panel-default panel-recommend">
+                <div class="panel-heading">
+                    <h3 class="panel-title">
+                        <a href="{{urlfor "HomeController.Index"}}?tab=recommend" title="更多推荐"><i class="fa fa-thumbs-o-up"></i> 最新推荐</a>
+                        <span style="color: #ddd;"> &nbsp;|&nbsp; </span>
+                        <a href="{{urlfor "SettingController.Star"}}" style="color: #f44336" title="我的收藏"><i class="fa fa-heart"></i> 我的收藏</a>
+                        <span class="text-muted hidden-xs hidden-sm" style="margin-left: 30px;">您与别人的薪资差距，只差一个随时随地学习的小程序。。。 <strong style="color: #f44336;" onclick="openModal()">戳我涨薪</strong></span>
+                        <small class="pull-right">
+                            <a href="{{urlfor "HomeController.Index"}}?tab=recommend" title="更多推荐"> 更多 <i class="fa fa-angle-right"></i><i class="fa fa-angle-right"></i></a>
+                        </small>
+                    </h3>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        {{range $idx,$item:=.Recommends}}
+                            <a href="{{urlfor "DocumentController.Index" ":key" $item.Identify}}" target="_blank" title="{{$item.BookName}}" class="col-xs-3 col-sm-2 col-md-1 {{if gt $idx 7}}hidden-xs{{end}}">
+                                <img class="img-responsive" onerror="this.src='/static/images/book.png'" src="{{showImg $item.Cover}}" class="cover" alt="{{$item.BookName}}">
+                                <div class="help-block">{{$item.BookName}}</div>
+                            </a>
+                        {{end}}
+                    </div>
+                    {{if (ads "index-under-latest-recommend" $.IsMobile)}}
+                        <div class="row">
+                            <div class="ap ap-index-under-latest-recommend col-xs-12">{{str2html (ads "index-under-latest-recommend" $.IsMobile)}}</div>
+                        </div>
+                    {{end}}
+                </div>
+            </div>
+        {{end}}
+
+        <div class="row">
+            {{if eq .SHOW_CATEGORY_INDEX "true"}}
+            <div class="col-sm-2 hidden-xs col-md-2 category-index">
+                <div class="panel panel-default">
+                    <div class="panel-heading"><h3 class="panel-title"><i class="fa fa-globe"></i> 分类索引</h3></div>
+                    <div class="panel-body">
+                        <ul>
+                            <li><a href="javascript:void(0)" data-show="all" class="active" title="全部分类">全部分类</a></li>
+                            {{range $idx,$cate:=.Cates}}
+                                {{if and (eq $cate.Pid 0) (gt $cate.Cnt 0)}}
+                                    <li><a href="javascript:void(0);" title="{{$cate.Title}}" data-show="cate-{{$cate.Id}}">{{$cate.Title}}</a></li>
+                                {{end}}
+                            {{end}}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-10 col-xs-12 col-md-10 category-detail">
+                {{else}}<div class="col-xs-12">{{end}}
+                    {{range $idx,$cate:=.Cates}}
+                        {{if and (eq $cate.Pid 0) (gt $cate.Cnt 0)}}
+                            <div class="panel panel-default" id="cate-{{$cate.Id}}">
+                                <div class="panel-heading">
+                                    <h3 class="panel-title">
+                                        <!--这里不显示一级分类的计数，主要是为了避免误导用户，因为一本书籍，可能属于多个子分类，但是一级分类下的计数并不是所有子分类计数的和-->
+                                        <a href="{{urlfor "HomeController.Index"}}?cid={{$cate.Id}}&tab=popular" title="{{$cate.Title}}"><i class="fa fa-th text-muted"></i> &nbsp;{{$cate.Title}} <!-- （{{$cate.Cnt}}） --></a>
+                                    </h3>
+                                </div>
+                                <div class="panel-body" style="padding-left: 0px;padding-right:0px;margin-left: -8px;margin-right: -8px;">
+                                    {{range $idx1,$children:=$.Cates}}
+                                        {{if and (gt $children.Cnt 0) (eq $cate.Id $children.Pid)}}
+                                            <div class="col-xs-12 col-sm-6 col-md-4">
+                                                <div class="cate-item clearfix" data-placement="bottom" title="{{$children.Intro}}">
+                                                    <div>
+                                                        <a href="{{urlfor "HomeController.Index"}}?cid={{$children.Id}}&tab=popular" title="{{$children.Title}}" class="pull-left"><img onerror="this.src='/static/images/cate.png'" src="{{showImg $children.Icon}}" alt="{{$children.Title}}"></a>
+                                                        <a href="{{urlfor "HomeController.Index"}}?cid={{$children.Id}}&tab=popular" title="{{$children.Title}}" >{{$children.Title}} （{{$children.Cnt}}）</a>
+                                                        <div class="help-block">{{$children.Intro}}</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {{end}}
+                                    {{end}}
+                                </div>
+                            </div>
+                        {{end}}
+                    {{end}}
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+<div class="backtop tooltips" title="回到顶部">
+    <i class="fa fa-arrow-up"></i>
+</div>
+{{template "widgets/footer.html" .}}
+<script>
+    'use strict';
+    // JavaScript functions to open and close the modal
+    function openModal() {
+        document.getElementById("modalOverlay").style.display = "block";
+        document.getElementById("modalContent").style.display = "block";
+    }
+    function closeModal() {
+        document.getElementById("modalOverlay").style.display = "none";
+        document.getElementById("modalContent").style.display = "none";
+    }
+    $(function () {
+        $(".cate-item").tooltip();
+        $(".backtop").click(function () {
+            $(window).scrollTop(0)
+        });
+        $(".cate-item").click(function (e) {
+            e.preventDefault()
+            location.href=$(this).find("a").attr("href")
+        });
+        $(".panel-recommend .panel-body a").tooltip();
+
+        function setFixedWith(){
+            $(".category-index .panel-default").attr("style","width:"+$(".category-index").width()+"px")
+        }
+
+        function fixed(){
+            var top = $(".category-index").offset().top
+            var height = $(window).height() - 110 - 70
+            var style = 'max-height:'+height+'px';
+            var scrollTop = $(window).scrollTop()
+            if(scrollTop -15>=top){
+                $(".category-index .panel-default").addClass("fixed")
+                $(".category-index .panel-body").attr("style",style)
+            }else{
+                $(".category-index .panel-default").removeClass("fixed")
+                $(".category-index .panel-body").attr("style",'')
+            }
+            console.log(scrollTop)
+            var panels = $(".category-detail>.panel")
+            
+            for (var i = 0; i < panels.length; i++) {
+                if($(panels[i]).offset().top - scrollTop>=0){
+                    $(".category-index a").removeClass("active");
+                    $("[data-show="+$(panels[i]).attr("id")+"]").addClass("active");
+                    i=panels.length
+                }
+            }
+        }
+        
+        $(".category-index a").tooltip();
+        $(".category-index a").click(function () {
+            var show=$(this).attr("data-show"),panels = $('.category-detail .panel');
+            $(".category-index a").removeClass("active");
+            $(this).addClass("active");
+            var panel=$(".category-detail #"+show);
+            if(panel.length == 0){
+                $(window).scrollTop(0)
+            }else{
+                var scrollTo = panel.offset().top - 70;
+                $(window).scrollTop(scrollTo)
+            }
+        });
+        if($(".category-index").length>0){
+            setFixedWith()
+            fixed()
+            $(window).resize(function () {
+                setFixedWith()
+            })
+            $(window).scroll(function () {
+                fixed()
+            })
+        }
+    })
+</script>
+</body>
+</html>

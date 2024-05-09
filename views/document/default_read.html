@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>{{.SeoTitle}}</title>
+    <meta name="keywords" content="{{.SeoKeywords}}"/>
+    <meta name="description" content="{{.SeoDescription}}"/>
+    <link href="{{$.StaticDomain}}/static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{{$.StaticDomain}}/static/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <link href="{{$.StaticDomain}}/static/nprogress/nprogress.css" rel="stylesheet">
+    <link href="{{$.StaticDomain}}/static/editor.md/css/editormd.preview.css" rel="stylesheet">
+    <link href="{{$.StaticDomain}}/static/css/toast.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{$.StaticDomain}}/static/katex/katex.min.css">
+	<link rel="stylesheet" href="{{$.StaticDomain}}/static/mind-map/mindmap.css">
+    <script src="{{$.StaticDomain}}/static/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="{{$.StaticDomain}}/static/respond.js/1.4.2/respond.min.js"></script>
+    <link href="/static/css/bookstack.css?version={{$.Version}}"rel="stylesheet">
+
+    <style>
+        .editormd-preview-container ol.linenums li code, .editormd-html-preview ol.linenums li code{
+            display: block;
+            white-space: pre;
+        }
+        li.L1, li.L3, li.L5, li.L7, li.L9{background-color: transparent;}
+        .editormd-preview-container pre.prettyprint, .editormd-html-preview pre.prettyprint{border-color: transparent;}
+        body{-webkit-overflow-scrolling:touch;}
+        .alink,.alink a{color: #888 !important;}
+        .alink:hover,.alink a:hover{color: red !important;}
+    </style>
+</head>
+<body>
+
+<!-- Modal -->
+<!-- 这个Modal主要用于显示思维导图的备注信息。 -->
+<div class="modal fade" id="ModalNote" tabindex="-1" role="dialog" aria-labelledby="ModalReplaceLabel">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span></button>
+				<h1 class="modal-title" id="ModalReplaceLabel" style="align:center;">思维导图备注</h1></div>
+			<div class="modal-body" style="overflow-y:auto; height:400px;"></div>
+			<div class="modal-footer">
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button></div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<div class="m-manual manual-mode-view manual-reader">
+    <header class="navbar navbar-static-top manual-head" role="banner">
+        <div class="container-fluid">
+            <div class="navbar-header pull-left manual-title">
+                <span class="slidebar" id="slidebar"><i class="fa fa-align-justify"></i></span>
+                <a href="{{urlfor "DocumentController.Index" ":key" .Model.Identify}}" title="{{.Model.BookName}}" class="book-title">{{.Model.BookName}}</a>
+                <span style="font-size: 12px;font-weight: 100;"></span>
+            </div>
+            <div class="navbar-header pull-right manual-menu">
+                <div class="bookstack-item">
+                    {{/*<a title="分享" href="javascript:" data-toggle="modal" data-target="#ModalShare" class="btn btn-default"><i class="fa fa-share-alt"></i> 分享</a>*/}}
+                    <a title="首页" href="/" class="btn btn-link"><i class="fa fa-home"></i> 首页</a>
+                    {{if $.Wxacode}}
+                    <a title="下载" href="javascript:" data-toggle="modal" data-target="#ModalBookChat" class="btn btn-light">
+                        <img src="/static/images/wxacode.png" style="position: relative;top:-2px;" alt="BookChat 小程序"> <span>小程序</span></a>
+                    {{end}}
+                    <a title="下载" href="javascript:" data-toggle="modal" data-target="#ModalDownload" class="btn btn-light"><i class="fa fa-cloud-download"></i> 下载</a>
+
+                    <a href="{{urlfor "RecordController.List" ":book_id" .Model.BookId}}" rel="nofollow" class="btn btn-link showModalHistory"><i class="fa fa-clock-o"></i> 阅读记录</a>
+                    <span class="dropdown">
+                        <button class="btn btn-link dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                            书签管理 <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                            <li>
+                                <a rel="nofollow" href="{{urlfor "BookmarkController.List" ":book_id" .Model.BookId}}" title="查看书签" rel="nofollow" data-bookid="{{.Model.BookId}}" class="showModalBookmark">
+                                    <img src="/static/images/icon-bookmark-list.png" alt="书签"> 我的书签
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{urlfor "BookmarkController.Bookmark" ":id" ""}}" data-docid="{{.DocId}}" rel="nofollow" class="bookmark-action">
+                                    <span class="bookmark-add {{if $.Bookmark}}hide{{end}}"> <img src="/static/images/icon-bookmark-add.png" alt="添加书签"> 添加书签</span>
+                                    <span class="bookmark-remove {{if $.Bookmark}}{{else}}hide{{end}}"> <img src="/static/images/icon-bookmark-remove.png" alt="移除书签"> 移除书签</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </span>
+
+                    {{if eq $.Member.MemberId $.Model.MemberId}}
+                        <a href="{{urlfor "DocumentController.Edit" ":key" .Model.Identify ":id" .DocId}}" title="编辑" class="btn btn-link btn-edit" data-url="{{urlfor "DocumentController.Edit" ":key" .Model.Identify ":id" ""}}"><i class="fa fa-edit"></i> 编辑文档</a>
+                    {{end}}
+                </div>
+            </div>
+        </div>
+    </header>
+    <div class="container-fluid manual-body">
+
+        <div class="manual-right">
+            <div class="manual-article">
+                <div class="article-head">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-10 col-md-offset-1 col-xs-12 text-center">
+                                <h1 id="article-title">{{.Title}}</h1>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="article-content">
+                    <div class="help-block article-info" style="padding-bottom: 20px;">
+                        {{if .Model.AdTitle}}
+                            <span class="alink tooltips text-red" title="{{.Model.AdTitle}}"><i class="fa fa-angle-right"></i> <a target="_blank" rel="nofollow" href="{{.Model.AdLink}}">{{.Model.AdTitle}}</a> <i class="fa fa-angle-left"></i> </span>
+                        {{end}}
+
+                        {{if .Model.Author}}
+                            <span><i class="fa fa-user-o"></i> <a target="_blank" title="来源" href="{{.Model.AuthorURL}}">来源 {{.Model.Author}}</a></span>
+                        {{end}}
+                        <span><i class="fa fa-eye"></i> 浏览 <i class="read-count">{{.View}}</i></span>
+                        <span class="hidden-xs"><a href="#" data-target="#ModalQRcode" data-toggle="modal"><i class="fa fa-qrcode"></i> 扫码</a></span>
+                        <span><a href="#" data-target="#ModalShare" data-toggle="modal"><i class="fa fa-share-alt"></i> 分享</a></span>
+                        <span class="pull-right hidden-xs tooltips" title="更新时间"><i class="fa fa-clock-o"></i> <i class="updated-at">{{.UpdatedAt}}</i></span>
+                    </div>
+                    {{if (ads "content-top" $.IsMobile)}}
+                        <div class="ap ap-content-top mgb-15px">
+                            {{str2html (ads "content-top" $.IsMobile)}}
+                        </div>
+                    {{end}}
+                    <article class="article-body  {{if eq .Model.Editor "markdown"}}markdown-body editormd-preview-container{{else}}editor-content{{end}}"  id="page-content">
+                    {{.Content}}
+                    </article>
+                    {{if (ads "content-bottom" $.IsMobile)}}
+                        <div class="ap ap-content-bottom mgt-15px">
+                            {{str2html (ads "content-bottom" $.IsMobile)}}
+                        </div>
+                    {{end}}
+                    <div class="row hung-read-link">
+                        <div class="col-xs-12 hung-pre" style="display: none">
+                            <span class="text-muted">上一篇:</span><a href="#"></a>
+                        </div>
+                        <div class="col-xs-12 hung-next" style="display: none">
+                            <span class="text-muted">下一篇:</span><a href="#"></a>
+                        </div>
+                    </div>
+
+                    {{/*<div class="jump-top">*/}}
+                        {{/*<a href="javascript:;" class="view-backtop"><i class="fa fa-arrow-up" aria-hidden="true"></i></a>*/}}
+                    {{/*</div>*/}}
+                    <div class="bookstack-bars">
+                        <ul>
+
+                            <li class="visible-xs visible-sm bars-menu bars-menu-hide"><a href="/" title="首页"><i class="fa fa-home"></i></a></li>
+                            <li class="visible-xs visible-sm bars-menu bars-menu-hide">
+                                <a title="下载" href="javascript:" data-toggle="modal" data-target="#ModalDownload"><i class="fa fa-cloud-download"></i></a>
+                            </li>
+                            <li class="visible-xs visible-sm bars-menu bars-menu-hide">
+                                <a title="分享" href="javascript:" data-toggle="modal" data-target="#ModalShare"><i class="fa fa-share-alt"></i></a>
+                            </li>
+                            <li class="visible-xs visible-sm bars-menu bars-menu-hide">
+                                <a title="阅读记录" class="showModalHistory" href="{{urlfor "RecordController.List" ":book_id" .Model.BookId}}" rel="nofollow"><i class="fa fa-clock-o"></i></a>
+                            </li>
+                            <li class="visible-xs visible-sm bars-menu bars-menu-hide">
+                                <a rel="nofollow" href="{{urlfor "BookmarkController.List" ":book_id" .Model.BookId}}" data-bookid="{{.Model.BookId}}" class="showModalBookmark" title="书签">
+                                    <img src="/static/images/icon-bookmark-list.png" alt="书签">
+                                </a>
+                            </li>
+                            <li class="visible-xs visible-sm bars-menu bars-menu-hide">
+                                <a href="{{urlfor "BookmarkController.Bookmark" ":id" ""}}" data-docid="{{.DocId}}" rel="nofollow" class="bookmark-action">
+                                <span class="bookmark-add {{if $.Bookmark}}hide{{end}}"> <img src="/static/images/icon-bookmark-add.png" alt="添加书签"></span>
+                                <span class="bookmark-remove {{if $.Bookmark}}{{else}}hide{{end}}"> <img src="/static/images/icon-bookmark-remove.png" alt="移除书签"></span>
+                                </a>
+                            </li>
+                            <li class="book-menu visible-xs visible-sm">
+                                <a href="javascript:void(0);" title="菜单"><i class="fa fa-align-justify"></i></a>
+                            </li>
+                            <li class="visible-xs visible-sm bars-menu-toggle">
+                                <a href="#" title="更多功能"><i class="fa fa-plus-circle"></i><i class="fa fa-minus-circle hide"></i></a>
+                            </li>
+                            <li>
+                                <a href="javascript:;" class="view-backtop"><i class="fa fa-arrow-up" aria-hidden="true"></i></a>
+                            </li>
+
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="manual-left">
+                <div class="article-search" data-bookid="{{.Model.BookId}}">
+                    <form id="searchForm" action="/read/{{.Model.Identify}}/search" method="post">
+                        <div class="input-group">
+                            <input type="text" name="keyword" placeholder="Search..." autocomplete="off" class="form-control">
+                            <span class="input-group-addon input-group-addon-clear"><i class="fa fa-remove"></i></span>
+                            <span class="input-group-addon">
+                                <button type="submit"><i class="fa fa-search"></i></button>
+                            </span>
+                        </div>
+                    </form>
+                    <div class="pull-right hidden-xs">
+                        <i class="fa fa-align-justify"></i>
+                    </div>
+                </div>
+                <div class="article-menu">
+                <div class="article-menu-detail {{if $.ToggleMenu}}collapse-menu{{end}}">
+                    {{.Result}}
+                </div>
+                <div class="search-result">
+                    <div class="search-empty" style="display: block;">
+                        <i class="fa fa-search-plus" aria-hidden="true"></i>
+                        <b class="text">暂无相关搜索结果！</b>
+                    </div>
+                    <ul class="search-list" id="searchList"></ul>
+                </div>
+                </div>
+
+                <div class="m-copyright">
+                    <p>
+                        本文档使用 <a href="//itshujia.com" style="color: #0e8c8c;font-weight: bold" target="_blank">IT书架</a> 构建
+                    </p>
+                </div>
+        </div>
+
+        <div class="manual-progress"><b class="progress-bar"></b></div>
+    </div>
+    <div class="manual-mask"></div>
+</div>
+<span class="article-toggle tooltips" title="展开/收起文章目录"><img alt="展开/收起文章目录" src="/static/images/toggle.png"/></span>
+<div id="menu-hidden" style="display: none;">
+    <!--站点统计代码-->
+    {{str2html $.TONGJI}}
+</div>
+
+
+{{template "widgets/share.html" .}}
+{{template "widgets/qrcode.html" .}}
+
+{{template "widgets/download.html" .}}
+
+{{if $.Wxacode}}
+{{template "widgets/bookchat.html" .}}
+{{end}}
+
+{{template "widgets/bookmark.html" .}}
+
+{{template "widgets/history.html" .}}
+
+<div class="bookstack-viewer"></div>
+
+{{/*<script src="/static/jquery/1.12.4/jquery.min.js" type="text/javascript"></script>*/}}
+<script src="{{$.StaticDomain}}/static/jquery/1.12.4/jquery.min.js" type="text/javascript"></script>
+{{/*<script src="/static/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>*/}}
+<script src="{{$.StaticDomain}}/static/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+
+
+<script type="text/javascript" src="{{$.StaticDomain}}/static/nprogress/nprogress.js"></script>
+<script type="text/javascript" src="{{$.StaticDomain}}/static/highlight/highlight.js"></script>
+<script type="text/javascript" src="{{$.StaticDomain}}/static/highlight/highlightjs-line-numbers.min.js"></script>
+<script type="text/javascript" src="{{$.StaticDomain}}/static/js/jquery.highlight.js"></script>
+<script type="text/javascript" src="{{$.StaticDomain}}/static/js/toast.script.js"></script>
+<script type="text/javascript" src="{{$.StaticDomain}}/static/js/jquery.qrcode.min.js"></script>
+<script type="text/javascript" src="{{$.StaticDomain}}/static/js/clipboard.min.js"></script>
+<script type="text/javascript" src="{{$.StaticDomain}}/static/katex/katex.min.js"></script>
+<script src="{{$.StaticDomain}}/static/editor.md/lib/marked.min.js" type="text/javascript"></script>
+<script src="{{$.StaticDomain}}/static/mind-map/kity.min.js" type="text/javascript"></script>
+<script src="{{$.StaticDomain}}/static/mind-map/kityminder.core.min.js" type="text/javascript"></script>
+<script src="{{$.StaticDomain}}/static/mind-map/mindmap.min.js" type="text/javascript"></script>
+<script type="text/javascript" src="/static/js/bookstack.js?version={{$.Version}}"></script>
+<script type="text/javascript" src="/static/js/main.js?version={{$.Version}}"></script>
+
+<script type="text/javascript">
+    'use strict';
+$(function () {
+
+    var keywords="{{.Keywords}}";
+    if (keywords){
+        var wds =keywords.split(","),l=wds.length;
+        for (var i = 0; i < l; i++) {
+            $(".markdown-body").highlight(wds[i].trim());
+        }
+    }
+
+    $("#searchList").on("click","a",function () {
+        var id = $(this).attr("data-id");
+        var url = "{{urlfor "DocumentController.Read" ":key" .Model.Identify ":id" ""}}" + id;
+        var _this=$(this);
+        _this.parent("li").siblings().find("a").removeClass("active");
+        _this.addClass("active");
+        load_doc(url,_this.attr("data-wd"));
+    });
+    //以https或者http开头的url链接，加上target='_blank'
+    $(".markdown-body").on("click",".btn-ilink",function (e) {
+        redirect($(this).parents("a").attr("href"));
+    })
+    $(".markdown-body").on("click","a",function (e) {
+        e.preventDefault();
+        var _this = $(this);
+        if(_this.find("img").length == 0){
+            redirect(_this.attr("href"))
+        }
+    });
+
+    function redirect(href){
+        var hrefLower=href.toLowerCase();
+        if(hrefLower.indexOf("http://")==0 || hrefLower.indexOf("https://")==0 ){
+            window.open(href);
+        }else{
+            location.href=href;
+        }
+    }
+
+    show_copy_btn();
+    initLinkWithImage();
+
+    $(".tooltips").tooltip();
+    $("#qrcode").qrcode(location.href);
+
+    var clipboard = new ClipboardJS('.btn-copy',{
+        // 通过target指定要复印的节点
+        target: function(trigger) {
+            return trigger.nextElementSibling;
+        }
+    });
+
+    clipboard.on('success', function(e) {
+        console.info('Copy Content：', e.text);
+        alertTips("success","代码复制成功",3000,"");
+    });
+
+    clipboard.on('error', function(e) {
+        console.log("Copy Error：",e);
+    });
+
+    $(".book-menu").click(function () {
+        $(".slidebar").trigger("click");
+    });
+
+    $(".article-toggle").click(function () {
+        if($("body").hasClass("article-menu-hide")){
+            $("body").removeClass("article-menu-hide");
+        }else{
+            $("body").addClass("article-menu-hide");
+        }
+    });
+    $(".collapse-menu .collapse-node span").click(function (e) {
+        if($(this).parent().hasClass("collapse-hide")){
+            $(this).parent().removeClass("collapse-hide")
+        }else {
+            $(this).parent().addClass("collapse-hide")
+        }
+    })
+});
+</script>
+</body>
+</html>

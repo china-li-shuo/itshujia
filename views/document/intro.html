@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    {{template "widgets/head.html" .}}
+        <style>
+            .relate-bookname{height: 40px; overflow: hidden; margin-bottom: 0px; text-overflow: ellipsis; display: block; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;}
+            h4{font-weight: normal;font-size: 16px;color: #333;}
+
+            /* 按钮样式 */
+            .btn-custom {
+                display: inline-block;
+                padding: 0px 12px; /* 调整按钮大小 */
+                font-size: 10px; /* 调整字体大小 */
+                text-align: center;
+                text-decoration: none;
+                cursor: pointer;
+                border-radius: 16px; /* 椭圆形 */
+                /*background-color: rgba(255, 176, 7, 0.07); !* 黄色 *!*/
+                background-color:rgba(128, 128, 128, 0.06); /* 灰色 */
+                /*color: #ff7300; !* 橙色字体 *!*/
+                color: #000000; /* 黑色字体 */
+                border: none;
+                transition: background-color 0.3s;
+            }
+
+            .btn-custom-lock {
+                display: inline-block;
+                padding: 0px 12px; /* 调整按钮大小 */
+                font-size: 10px; /* 调整字体大小 */
+                text-align: center;
+                text-decoration: none;
+                cursor: pointer;
+                border-radius: 16px; /* 椭圆形 */
+                /*background-color: rgba(128, 128, 128, 0.06); !* 灰色 *!*/
+                background-color: rgba(255, 176, 7, 0.07);
+
+                color: #ff7300; /* 橙色字体 */
+                border: none;
+                transition: background-color 0.3s;
+            }
+        </style>
+</head>
+<body id="bookstack-intro">
+{{template "widgets/header.html" .}}
+<div class="container">
+    <div class="row bookstack-info">
+        <div class="col-xs-12">
+            <h1>{{.Book.BookName}}
+                 {{if and (eq $.Member.MemberId $.Book.MemberId) (ne $.Book.RoleId 3)}}
+                     <a href="{{urlfor "DocumentController.Edit" ":key" .Book.Identify ":id" ""}}" class="tooltips" title="编辑文档"> &nbsp;<small><i class="fa fa-edit"></i></small> </a>
+                     <a href="{{urlfor "BookController.Setting" ":key" .Book.Identify}}" class="tooltips" title="书籍设置"> &nbsp;<small><i class="fa fa-cog"></i></small> </a>
+                 {{end}}
+                {{if and (gt $.Member.MemberId 0) (lt $.Member.Role 2)}}
+                    <a href="{{urlfor "ManagerController.EditBook" ":key" .Book.Identify}}" class="tooltips" title="管理员书籍设置"> &nbsp;<small><i class="fa fa-cogs"></i></small> </a>
+                {{end}}
+            </h1>
+            {{if (ads "intro-under-book-name" $.IsMobile)}}
+                <div class="ap ap-intro-under-book-name">
+                    {{str2html (ads "intro-under-book-name" $.IsMobile)}}
+                </div>
+            {{end}}
+        </div>
+        <div class="col-sm-3 col-xs-6 col-md-3">
+            <div class="{{if gt .Book.OrderIndex 0}}recommend-book{{end}} mgt-15px">
+                <img src="{{showImg .Book.Cover}}"  onerror="this.src='/static/images/book.png'"  class="img-responsive border-cover-img" alt="{{.Book.BookName}}">
+            </div>
+        </div>
+        <div class="{{if $.Wxacode}}col-sm-6 col-md-7{{else}}col-sm-9{{end}} col-xs-6">
+            <ul class="none-listyle">
+                <li class="bookstack-score"><span>文档评分：</span>
+                    <i class="bookstack-star star-{{.Book.Score}}"></i>
+                    {{.Book.ScoreFloat}}
+                    （<span class="text-muted">{{.Book.CntScore}} 个有效评分</span>）
+                </li>
+                <li><span>文档语言：</span> <span style="color: red">{{.Book.Lang}}</span> </li>
+                <li><span>章节数量：</span>{{.Book.DocCount}}</li>
+                <li><span>阅读人次：</span>{{.Book.Vcnt}}</li>
+                <li><span>收藏数量：</span>{{.Book.Star}}</li>
+                {{if .Book.Author}}
+                <li><span>内容来源：</span><a href="{{.Book.AuthorURL}}" target="_blank" title="内容来源：{{.Book.Author}}">{{.Book.Author}}</a>
+                    {{if .Book.AdTitle}}
+                        <span class="text-muted">&nbsp; | &nbsp;</span>
+                        <a target="_blank" rel="nofollow" class="text-red" title="{{.Book.AdTitle}}" href="{{.Book.AdLink}}">{{.Book.AdTitle}}</a>
+                    {{end}}
+                </li>
+                {{end}}
+                <li><span>整理分享：</span><a target="_blank" class="text-primary" href="{{urlfor "UserController.Index" ":username" (.Book.MemberId|getUsernameByUid)}}">{{.Book.MemberId|getNicknameByUid}}</a></li>
+                <li class="hidden-xs">
+                    <div class="btn btn-group">
+                    {{range $index,$val:=.Menu}}
+                    {{if eq $index 0}}
+                        <a href="{{urlfor "DocumentController.Read" ":key" $.Book.Identify ":id" .Identify}}" target="_blank" title="马上阅读" class="btn btn-success"><i class="fa fa-book"></i> 阅读</a>
+                    {{end}}
+                    {{end}}
+                        <a href="{{urlfor "BookController.Star" ":id" .Book.BookId}}" rel="nofollow" class="btn btn-warning ajax-star">
+                            {{if eq (doesStar $.Member.MemberId $.Book.BookId) true}}
+                                <i class="fa fa-heart"></i> <span>已收藏</span>
+                            {{else}}
+                                <i class="fa fa-heart-o"></i> <span>收藏</span>
+                            {{end}}
+                        </a>
+                        <a data-target="#ModalDownload" data-toggle="modal" href="#" target="_blank" class="btn btn-danger"><i class="fa fa-cloud-download"></i> 下载</a>
+                        <!-- {{if $.Wxacode}}
+                            <a href="#" data-target="#ModalBookChat" data-toggle="modal" class="btn btn-primary"><img src="/static/images/wxacode-white.png"> 小程序</a>
+                        {{end}} -->
+                        <a href="#" data-target="#ModalShare" data-toggle="modal" class="btn btn-info"><i class="fa fa-share-alt"></i> &nbsp;分享</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        {{if $.Wxacode}}
+            <div class="col-sm-3 col-md-2 hidden-xs">
+                <img class="img-responsive" src="{{showImg $.Wxacode}}" alt="{{.Book.BookName}} - BookChat 微信小程序阅读码">
+                <div class="help-block text-center">微信扫一扫，知识掌上学</div>
+            </div>
+        {{end}}
+        <div class="col-xs-12 text-center visible-xs">
+            <div class="btn btn-group">
+            {{range $index,$val:=.Menu}}
+            {{if eq $index 0}}
+                <a href="{{urlfor "DocumentController.Read" ":key" $.Book.Identify ":id" .Identify}}" target="_blank" title="马上阅读" class="btn btn-success"><i class="fa fa-book"></i>阅读</a>
+            {{end}}
+            {{end}}
+                <a href="{{urlfor "BookController.Star" ":id" .Book.BookId}}" rel="nofollow" class="btn btn-warning ajax-star">
+                {{if eq (doesStar $.Member.MemberId $.Book.BookId) true}}
+                    <i class="fa fa-heart"></i> <span>已收藏</span>
+                {{else}}
+                    <i class="fa fa-heart-o"></i> <span>收藏</span>
+                {{end}}
+                </a>
+                <a data-target="#ModalDownload" data-toggle="modal" href="#" target="_blank" class="btn btn-danger"><i class="fa fa-cloud-download"></i>下载</a>
+{{/*                {{if $.Wxacode}}*/}}
+{{/*                    <a href="#" data-target="#ModalBookChat" data-toggle="modal" class="btn btn-primary"><img src="/static/images/wxacode-white.png">小程序</a>*/}}
+{{/*                {{end}}*/}}
+                <a href="#" data-target="#ModalShare" data-toggle="modal" class="btn btn-info"><i class="fa fa-share-alt"></i>分享</a>
+            </div>
+        </div>
+        {{if (ads "intro-before-menu" $.IsMobile)}}
+            <div class="ap ap-intro-before-menu mgt-15px col-xs-12">
+                {{str2html (ads "intro-before-menu" $.IsMobile)}}
+            </div>
+        {{end}}
+        <div class="col-xs-12 mgt-15px">
+            <ul class="none-listyle">
+                {{if .Book.Label}}
+                <li style="border-bottom: 0px;">
+                    <span>文档标签</span>
+                    <div class="bookstack-labels">
+                    {{str2html (tagsToLink .Book.Label)}}
+                    </div>
+                </li>
+                {{end}}
+
+                <li style="border-bottom: 0px;">
+                    <span>文档概述</span>
+                    <div style="text-indent: 2em;">
+                    {{.Book.Description}}
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12 bookstack-menu">
+            <ul class="nav nav-tabs">
+                <li {{if eq .Tab "default"}}class="active"{{end}}><a href="{{urlfor "DocumentController.Index" ":key" $.Book.Identify}}">书籍目录</a></li>
+                <li {{if eq .Tab "comment"}}class="active"{{end}}><a href="{{urlfor "DocumentController.Index" ":key" $.Book.Identify}}?tab=comment">书籍评论 (<span class="text-muted">{{$.Book.CntComment}}</span>)</a></li>
+            </ul>
+            <div class="help-block">
+                <ul class="none-listyle">
+                    {{if eq .Tab "comment"}}
+                            {{/*评论*/}}
+                            <li class="comments-form clearfix">
+                                <div class="score">
+                                    {{if gt $.MyScore 0}}
+                                    <span class="text-muted">我的评分: <i class="bookstack-star star-{{$.MyScore}}"></i></span>
+                                    {{else}}
+                                    <span title="点击即可给当前文档打分" class="cursor-pointer" data-url="{{urlfor "BookController.Score" ":id" $.Book.BookId}}" data-toggle="tooltip">
+                                        <i class="fa fa-star-o" data-score="1" data-tips="很差"></i>
+                                        <i class="fa fa-star-o" data-score="2" data-tips="较差"></i>
+                                        <i class="fa fa-star-o" data-score="3" data-tips="还行"></i>
+                                        <i class="fa fa-star-o" data-score="4" data-tips="推荐"></i>
+                                        <i class="fa fa-star-o" data-score="5" data-tips="力荐"></i>
+                                    </span>
+                                    <span class="text-muted"></span>
+                                    {{end}}
+
+                                </div>
+                                <form action="{{urlfor "BookController.Comment" ":id" $.Book.BookId}}" method="post" class="ajax-form">
+                                    <div class="form-group">
+                                        <textarea class="form-control" name="content" rows="3" placeholder="在这里，您可以给当前小编提意见和建议，以及对文档内容进行纠偏纠错提醒。"></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <span class="pull-left text-muted">文明评论，理性发言</span>
+                                        <input type="submit" class="btn btn-success pull-right" value="发表点评">
+                                    </div>
+                                </form>
+                            </li>
+                            <li class="comments-list">
+                                <ul>
+                                    {{range .Comments}}
+                                    <li class="clearfix">
+                                        <div class="col-xs-12">
+                                            <img src="{{showImg .Avatar}}" class="img-thumbnail img-circle img-responsive" alt="{{.Nickname}}">
+                                            <span class="username">{{.Nickname}}</span>
+                                            <span>评分:<i class="bookstack-star star-{{.Score}}"></i></span>
+                                            <span class="text-muted hidden-xs pull-right">{{date .TimeCreate "Y-m-d H:i:s"}}</span>
+                                        </div>
+                                        <div class="col-xs-12 comments-content">{{.Content}}</div>
+                                    </li>
+                                    {{end}}
+
+                                </ul>
+                            </li>
+
+                    {{end}}
+                    {{if eq .Tab "default"}}
+                        {{range .Menu}}
+                            <li>
+                                <a href="{{urlfor "DocumentController.Read" ":key" $.Book.Identify ":id" .Identify}}" target="_blank" title="{{.DocumentName}}">
+                                    {{/*未登录用户和未付费用户展示标签*/}}
+                                    {{if and (eq $.Member.ReadLevel 0)}}
+                                            {{if (eq .IsFreeRead 2)}}
+                                                <span class="btn-custom-lock">解锁</span>
+                                            {{else}}
+                                                <span class="btn-custom">免费</span>
+                                            {{end}}
+                                    {{end}}
+                                    {{.DocumentName}}
+                                </a>
+                            </li>
+                        {{end}}
+                    {{end}}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    {{if (ads "intro-before-related-books" $.IsMobile)}}
+        <div class="row mgt-15px">
+            <div class="ap ap-intro-before-related-books col-xs-12">
+                {{str2html (ads "intro-before-related-books" $.IsMobile)}}
+            </div>
+        </div>
+    {{end}}
+
+    {{if .RelateBooks}}
+        <div class="row mgt-15px">
+            <div class="col-xs-12 mgt-15px">
+                <h4 class="help-block"><i class="fa fa-th color-gray"></i> 相关书籍</h4>
+            </div>
+            {{range .RelateBooks}}
+                <div class="col-xs-6 col-sm-3 col-md-2 mgt-15px">
+                    <dl class="manual-item-standard">
+                        <dt>
+                            <a class="clearfix tooltips" href="{{urlfor "DocumentController.Index" ":key" .Identify}}" title="{{.BookName}}" target="_blank">
+                                <img class="img-responsive border-cover-img" onerror="this.src='/static/images/book.png'" src="{{showImg .Cover }}" alt="{{.BookName}}">
+                            </a>
+                        </dt>
+                        <dd class="mgt-15px">
+                            <a href="{{urlfor "DocumentController.Index" ":key" .Identify}}" class="name tooltips relate-bookname" title="{{.BookName}}" target="_blank" data-original-title="{{.BookName}}">{{.BookName}}</a>
+                        </dd>
+                    </dl>
+                </div>
+            {{end}}
+        </div>
+    {{end}}
+</div>
+{{template "widgets/share.html" .}}
+{{template "widgets/download.html" .}}
+{{if $.Wxacode}}
+    {{template "widgets/bookchat.html" .}}
+{{end}}
+{{template "widgets/footer.html" .}}
+<script type="text/javascript" src="{{$.StaticDomain}}/static/js/toast.script.js"></script>
+<script type="text/javascript" src="/static/js/main.js?version={{$.Version}}"></script>
+<script>
+$(function(){
+    $("#bookstack-intro .bookstack-info .col-md-3 img").click(function(){
+        location.href=$("#bookstack-intro .bookstack-info .none-listyle .btn-success").attr("href");
+    })
+})
+</script>
+</body>
+</html>
