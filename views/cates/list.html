@@ -186,7 +186,7 @@
             }
             console.log(scrollTop)
             var panels = $(".category-detail>.panel")
-            
+
             for (var i = 0; i < panels.length; i++) {
                 if($(panels[i]).offset().top - scrollTop>=0){
                     $(".category-index a").removeClass("active");
@@ -195,7 +195,7 @@
                 }
             }
         }
-        
+
         $(".category-index a").tooltip();
         $(".category-index a").click(function () {
             var show=$(this).attr("data-show"),panels = $('.category-detail .panel');
