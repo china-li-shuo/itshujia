@@ -63,7 +63,7 @@ func initialization() {
 
 		book := models.NewBook()
 		book.MemberId = member.MemberId
-		book.BookName = "BookStack"
+		book.BookName = "itshujia"
 		book.Status = 0
 		book.Description = "这是一个BookStack演示书籍，该书籍是由系统初始化时自动创建。"
 		book.CommentCount = 0

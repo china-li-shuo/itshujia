@@ -84,6 +84,27 @@
                 box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
                 z-index: 10000; /* Ensure it's above the overlay */
             }
+
+            .fixed-ad {
+                position: fixed;
+                right: 10px; /* 右侧边距 */
+                top: 35%; /* 顶部边距 */
+                transform: translateY(-50%); /* 垂直居中 */
+                width: 150px; /* 广告宽度 */
+                background-color: #fff;
+                padding: 10px;
+                border: 2px solid #ccc;
+                border-radius: 8px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                text-align: center;
+                z-index: 10000; /* 确保它在其他内容之上 */
+            }
+
+            .fixed-ad img {
+                max-width: 100%;
+                height: auto;
+                margin-bottom: 10px;
+            }
         </style>
 </head>
 <body id="bookstack-intro">
@@ -109,6 +130,15 @@
             </div>
 
             {{/* 遮罩层end*/}}
+
+            {{/*右侧广告位start*/}}
+            <div class="fixed-ad">
+                <p>扫描二维码关注我们</p>
+                <img src="/projects/help/202404/17c42931a5a04f16.jpeg" alt="二维码">
+            </div>
+            {{/*右侧广告位end*/}}
+
+
 
             <h1>{{.Book.BookName}}
                  {{if and (eq $.Member.MemberId $.Book.MemberId) (ne $.Book.RoleId 3)}}

@@ -225,8 +225,8 @@ func RegisterFunction() {
 
 func ResolveCommand(args []string) {
 	flagSet := flag.NewFlagSet("MinDoc command: ", flag.ExitOnError)
-	flagSet.StringVar(&ConfigurationFile, "config", "", "BookStack configuration file.")
-	flagSet.StringVar(&LogFile, "log", "", "BookStack log file path.")
+	flagSet.StringVar(&ConfigurationFile, "config", "", "itshujia configuration file.")
+	flagSet.StringVar(&LogFile, "log", "", "itshujia log file path.")
 
 	flagSet.Parse(args)
 

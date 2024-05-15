@@ -72,7 +72,7 @@ func init() {
 }
 
 func PrintInfo() {
-	fmt.Println("Service: ", "BookStack")
+	fmt.Println("Service: ", "itshujia")
 	if Version != unknown {
 		fmt.Println("Version: ", Version)
 	}
