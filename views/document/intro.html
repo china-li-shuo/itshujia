@@ -100,11 +100,19 @@
                 z-index: 10000; /* 确保它在其他内容之上 */
             }
 
+            /* 移动端适配：隐藏广告框 */
+            @media (max-width: 768px) {
+                .fixed-ad {
+                    display: none; /* 隐藏广告框 */
+                }
+            }
+
             .fixed-ad img {
                 max-width: 100%;
                 height: auto;
                 margin-bottom: 10px;
             }
+
         </style>
 </head>
 <body id="bookstack-intro">

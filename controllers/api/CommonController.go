@@ -790,24 +790,6 @@ func (this *CommonController) Read() {
 		this.Response(http.StatusNotFound, messageNotFound)
 	}
 
-	////==================================================================================================
-	////如果是不是免费阅读的图书需要先登录且有权限才可以阅读
-	//if book.IsFreeRead == 2 {
-	//	uid := this.isLogin()
-	//	if uid <= 0 {
-	//		this.Response(http.StatusBadRequest, "您当前未登录，无法阅读企业题库，您是否要先登录？")
-	//	}
-	//
-	//	//如果是免费用户需要添加管理员开通付费用户才行
-	//	cols := []string{"member_id", "read_level"}
-	//	m, _ := models.NewMember().Find(uid, cols...)
-	//	if m.ReadLevel == 0 {
-	//		//请添加管理员开通权限
-	//		this.Response(http.StatusBadRequest, "请关注公众号《IT书架》联系我开通企业题库权限")
-	//	}
-	//}
-	////==================================================================================================
-
 	doc := models.NewDocument()
 	docId, _ := strconv.Atoi(docIdentify)
 	if docId > 0 {
@@ -829,7 +811,7 @@ func (this *CommonController) Read() {
 		m, _ := models.NewMember().Find(uid, cols...)
 		if m.ReadLevel == 0 {
 			//请添加管理员开通权限
-			this.Response(http.StatusBadRequest, "请关注公众号《IT书架》联系我开通企业题库权限")
+			this.Response(http.StatusBadRequest, "请关注公众号《IT书架》通过菜单联系我，进行解锁所有书籍阅读权限！")
 		}
 	}
 	//==================================================================================================

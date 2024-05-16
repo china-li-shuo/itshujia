@@ -247,13 +247,6 @@ func (this *DocumentController) Read() {
 			this.Redirect(beego.URLFor("AccountController.Login"), 302)
 			return
 		}
-
-		////判断用户是否有免费阅读权限
-		//if this.Member.ReadLevel == 0 {
-		//	//请添加管理员开通权限
-		//	this.Redirect("/read/help/bookchatapp", 302)
-		//	return
-		//}
 	}
 	//==================================================================================================
 
@@ -291,7 +284,6 @@ func (this *DocumentController) Read() {
 	if doc.IsFreeRead == 2 {
 		if this.Member.MemberId <= 0 {
 			this.Redirect(beego.URLFor("AccountController.Login"), 302)
-			//this.Redirect("/login", 302)
 			return
 		}
 
