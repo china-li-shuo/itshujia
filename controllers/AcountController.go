@@ -12,11 +12,10 @@ import (
 	"github.com/astaxie/beego/orm"
 	"github.com/astaxie/beego/utils/captcha"
 
-	"github.com/TruthHun/BookStack/conf"
-	"github.com/TruthHun/BookStack/models"
-	"github.com/TruthHun/BookStack/oauth"
-	"github.com/TruthHun/BookStack/utils"
-	//"github.com/lifei6671/gocaptcha"
+	"github.com/china-li-shuo/itshujia/conf"
+	"github.com/china-li-shuo/itshujia/models"
+	"github.com/china-li-shuo/itshujia/oauth"
+	"github.com/china-li-shuo/itshujia/utils"
 )
 
 // AccountController 用户登录与注册.
@@ -419,15 +418,6 @@ func (this *AccountController) FindPassword() {
 		if !mailConf.EnableMail {
 			this.JsonResult(6004, "未启用邮件服务")
 		}
-
-		//captcha := this.GetString("code")
-		//如果开启了验证码
-		//if v, ok := this.Option["ENABLED_CAPTCHA"]; ok && strings.EqualFold(v, "true") {
-		//	v, ok := this.GetSession(conf.CaptchaSessionName).(string)
-		//	if !ok || !strings.EqualFold(v, captcha) {
-		//		this.JsonResult(6001, "验证码不正确")
-		//	}
-		//}
 
 		if !cpt.VerifyReq(this.Ctx.Request) {
 			this.JsonResult(6001, "验证码不正确")

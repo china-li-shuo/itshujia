@@ -6,7 +6,7 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/plugins/cors"
 
-	"github.com/TruthHun/BookStack/controllers/api"
+	"github.com/china-li-shuo/itshujia/controllers/api"
 )
 
 func bookChatRouters() {

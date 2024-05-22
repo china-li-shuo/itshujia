@@ -22,7 +22,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/TruthHun/BookStack/utils/html2md"
+	"github.com/china-li-shuo/itshujia/utils/html2md"
 
 	"github.com/mssola/user_agent"
 
@@ -33,8 +33,8 @@ import (
 	"github.com/TruthHun/html2article"
 	"github.com/alexcesaro/mail/mailer"
 
-	"github.com/TruthHun/BookStack/conf"
-	"github.com/TruthHun/BookStack/models/store"
+	"github.com/china-li-shuo/itshujia/conf"
+	"github.com/china-li-shuo/itshujia/models/store"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/TruthHun/gotil/util"

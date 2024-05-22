@@ -8,12 +8,12 @@ import (
 	"strings"
 	"time"
 
-	"github.com/TruthHun/BookStack/models/store"
-	"github.com/TruthHun/BookStack/utils"
+	"github.com/china-li-shuo/itshujia/models/store"
+	"github.com/china-li-shuo/itshujia/utils"
 
 	"github.com/astaxie/beego"
 
-	"github.com/TruthHun/BookStack/models"
+	"github.com/china-li-shuo/itshujia/models"
 )
 
 // 登录之后才能调用的接口放这里

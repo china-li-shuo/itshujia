@@ -3,10 +3,10 @@ package controllers
 import (
 	"time"
 
-	"github.com/TruthHun/BookStack/conf"
-	"github.com/TruthHun/BookStack/models"
-	"github.com/TruthHun/BookStack/utils"
 	"github.com/astaxie/beego"
+	"github.com/china-li-shuo/itshujia/conf"
+	"github.com/china-li-shuo/itshujia/models"
+	"github.com/china-li-shuo/itshujia/utils"
 )
 
 type UserController struct {
@@ -38,7 +38,7 @@ func (this *UserController) Prepare() {
 	}
 }
 
-//首页
+// 首页
 func (this *UserController) Index() {
 
 	page, _ := this.GetInt("page")
@@ -65,7 +65,7 @@ func (this *UserController) Index() {
 	this.TplName = "user/index.html"
 }
 
-//收藏
+// 收藏
 func (this *UserController) Collection() {
 	page, _ := this.GetInt("page")
 	cid, _ := this.GetInt("cid")
@@ -93,7 +93,7 @@ func (this *UserController) Collection() {
 	this.TplName = "user/collection.html"
 }
 
-//关注
+// 关注
 func (this *UserController) Follow() {
 	page, _ := this.GetInt("page")
 	pageSize := 18
@@ -117,7 +117,7 @@ func (this *UserController) Follow() {
 	this.TplName = "user/fans.html"
 }
 
-//粉丝和关注
+// 粉丝和关注
 func (this *UserController) Fans() {
 	page, _ := this.GetInt("page")
 	pageSize := 18

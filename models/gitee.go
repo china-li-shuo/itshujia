@@ -1,8 +1,8 @@
 package models
 
 import (
-	"github.com/TruthHun/BookStack/oauth"
 	"github.com/astaxie/beego/orm"
+	"github.com/china-li-shuo/itshujia/oauth"
 )
 
 var ModelGitee = new(Gitee)

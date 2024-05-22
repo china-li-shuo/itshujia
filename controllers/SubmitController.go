@@ -3,8 +3,8 @@ package controllers
 import (
 	"strings"
 
-	"github.com/TruthHun/BookStack/models"
 	"github.com/astaxie/beego"
+	"github.com/china-li-shuo/itshujia/models"
 )
 
 type SubmitController struct {

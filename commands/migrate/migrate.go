@@ -14,15 +14,14 @@
 package migrate
 
 import (
-	"os"
-
 	"container/list"
 	"fmt"
 	"log"
+	"os"
 
-	"github.com/TruthHun/BookStack/models"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
+	"github.com/china-li-shuo/itshujia/models"
 )
 
 var (

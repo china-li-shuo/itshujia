@@ -3,7 +3,7 @@ package routers
 import (
 	"github.com/astaxie/beego"
 
-	"github.com/TruthHun/BookStack/controllers"
+	"github.com/china-li-shuo/itshujia/controllers"
 )
 
 func webRouter() {

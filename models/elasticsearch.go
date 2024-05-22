@@ -1,21 +1,18 @@
 package models
 
 import (
+	"encoding/json"
 	"errors"
+	"fmt"
 	"io/ioutil"
+	"net/http"
+	"strconv"
 	"strings"
 	"time"
 
-	"github.com/TruthHun/BookStack/utils"
+	"github.com/china-li-shuo/itshujia/utils"
 
 	"github.com/PuerkitoBio/goquery"
-
-	"net/http"
-
-	"encoding/json"
-	"strconv"
-
-	"fmt"
 
 	"github.com/TruthHun/gotil/util"
 	"github.com/astaxie/beego"
@@ -26,7 +23,7 @@ import (
 // 是否正在创建全量索引
 var IsRebuildAllIndex = false
 
-//全文搜索客户端
+// 全文搜索客户端
 type ElasticSearchClient struct {
 	Host           string        //host
 	Index          string        //索引
@@ -36,7 +33,7 @@ type ElasticSearchClient struct {
 	IsRelateSearch bool
 }
 
-//全文搜索
+// 全文搜索
 type ElasticSearchData struct {
 	Id       int    `json:"id"`       //文档或书籍id
 	BookId   int    `json:"book_id"`  //书籍id。这里的book_id起到的作用是IsBooK的布尔，以及搜索书籍文档时候的过滤
@@ -47,7 +44,7 @@ type ElasticSearchData struct {
 	Private  int    `json:"private"`  //书籍或者文档是否是公开的
 }
 
-//统计信息结构
+// 统计信息结构
 type ElasticSearchCount struct {
 	Shards struct {
 		Failed     int `json:"failed"`
@@ -70,7 +67,7 @@ type Tokens struct {
 	Tokens []Token `json:"tokens"`
 }
 
-//搜索结果结构
+// 搜索结果结构
 type ElasticSearchResult struct {
 	Shards struct {
 		Failed     int `json:"failed"`
@@ -102,7 +99,7 @@ type ElasticSearchResult struct {
 	Took     int  `json:"took"`
 }
 
-//创建全文搜索客户端
+// 创建全文搜索客户端
 func NewElasticSearchClient() (client *ElasticSearchClient) {
 	client = &ElasticSearchClient{
 		Host:    GetOptionValue("ELASTICSEARCH_HOST", "http://localhost:9200/"),
@@ -136,7 +133,7 @@ func (this *ElasticSearchClient) html2Text(htmlStr string) string {
 	return gq.Text()
 }
 
-//初始化全文搜索客户端，包括检查索引是否存在，mapping设置等
+// 初始化全文搜索客户端，包括检查索引是否存在，mapping设置等
 func (this *ElasticSearchClient) Init() (err error) {
 	if !this.On { //未开启ElasticSearch，则不初始化
 		return
@@ -186,7 +183,7 @@ func (this *ElasticSearchClient) Init() (err error) {
 	return
 }
 
-//搜索内容
+// 搜索内容
 // 如果书籍id大于0，则表示搜索指定的书籍的文档。否则表示搜索书籍
 // 如果不指定书籍id，则只能搜索
 func (this *ElasticSearchClient) Search(wd string, p, listRows int, isSearchDoc bool, bookId ...int) (result ElasticSearchResult, err error) {
@@ -263,9 +260,9 @@ func (this *ElasticSearchClient) Search(wd string, p, listRows int, isSearchDoc 
 	return
 }
 
-//重建索引【全量】
-//采用批量重建索引的方式进行
-//每次操作100条数据
+// 重建索引【全量】
+// 采用批量重建索引的方式进行
+// 每次操作100条数据
 func (this *ElasticSearchClient) RebuildAllIndex(bookId ...int) {
 	if !this.On {
 		return
@@ -396,7 +393,7 @@ func (this *ElasticSearchClient) RebuildAllIndex(bookId ...int) {
 	}
 }
 
-//通过bulk，批量创建/更新索引
+// 通过bulk，批量创建/更新索引
 func (this *ElasticSearchClient) BuildIndexByBuck(data []ElasticSearchData) (err error) {
 	if !this.On {
 		return
@@ -462,7 +459,7 @@ func (this *ElasticSearchClient) SetBookPublic(bookId int, public bool) (err err
 	return
 }
 
-//创建索引
+// 创建索引
 func (this *ElasticSearchClient) BuildIndex(es ElasticSearchData) (err error) {
 	if !this.On {
 		return
@@ -522,9 +519,9 @@ func (this *ElasticSearchClient) SegWords(keyword string) string {
 	return keyword
 }
 
-//查询索引量
-//@return           count           统计数据
-//@return           err             错误
+// 查询索引量
+// @return           count           统计数据
+// @return           err             错误
 func (this *ElasticSearchClient) Count() (count int, err error) {
 	if !this.On {
 		err = errors.New("未启用ElasticSearch")
@@ -582,43 +579,43 @@ func (this *ElasticSearchClient) DeleteIndex(id int, isBook bool) (err error) {
 	return
 }
 
-//检验es服务能否连通
+// 检验es服务能否连通
 func (this *ElasticSearchClient) ping() error {
 	return utils.HandleResponse(this.get(this.Host).Response())
 }
 
-//查询索引是否存在
-//@return			err				nil表示索引存在，否则表示不存在
+// 查询索引是否存在
+// @return			err				nil表示索引存在，否则表示不存在
 func (this *ElasticSearchClient) existIndex() (err error) {
 	api := this.Host + this.Index
 	err = utils.HandleResponse(this.get(api).Response())
 	return
 }
 
-//创建索引
-//@return           err             创建索引
+// 创建索引
+// @return           err             创建索引
 func (this *ElasticSearchClient) createIndex() (err error) {
 	api := this.Host + this.Index
 	err = utils.HandleResponse(this.put(api).Response())
 	return
 }
 
-//put请求
+// put请求
 func (this *ElasticSearchClient) put(api string) (req *httplib.BeegoHTTPRequest) {
 	return httplib.Put(api).Header("Content-Type", "application/json").SetTimeout(this.Timeout, this.Timeout)
 }
 
-//post请求
+// post请求
 func (this *ElasticSearchClient) post(api string) (req *httplib.BeegoHTTPRequest) {
 	return httplib.Post(api).Header("Content-Type", "application/json").SetTimeout(this.Timeout, this.Timeout)
 }
 
-//delete请求
+// delete请求
 func (this *ElasticSearchClient) delete(api string) (req *httplib.BeegoHTTPRequest) {
 	return httplib.Delete(api).Header("Content-Type", "application/json").SetTimeout(this.Timeout, this.Timeout)
 }
 
-//get请求
+// get请求
 func (this *ElasticSearchClient) get(api string) (req *httplib.BeegoHTTPRequest) {
 	return httplib.Get(api).Header("Content-Type", "application/json").SetTimeout(this.Timeout, this.Timeout)
 }

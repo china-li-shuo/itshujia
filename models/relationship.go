@@ -3,10 +3,10 @@ package models
 import (
 	"errors"
 
-	"github.com/TruthHun/BookStack/conf"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
 	"github.com/astaxie/beego/orm"
+	"github.com/china-li-shuo/itshujia/conf"
 )
 
 type Relationship struct {

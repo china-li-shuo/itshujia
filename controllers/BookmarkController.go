@@ -3,9 +3,9 @@ package controllers
 import (
 	"time"
 
-	"github.com/TruthHun/BookStack/models"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
+	"github.com/china-li-shuo/itshujia/models"
 )
 
 type BookmarkController struct {

@@ -3,8 +3,8 @@ package models
 import (
 	"strings"
 
-	"github.com/TruthHun/BookStack/conf"
 	"github.com/astaxie/beego/orm"
+	"github.com/china-li-shuo/itshujia/conf"
 )
 
 type Label struct {

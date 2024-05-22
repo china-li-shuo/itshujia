@@ -3,7 +3,7 @@ package models
 import (
 	"strings"
 
-	"github.com/TruthHun/BookStack/utils"
+	"github.com/china-li-shuo/itshujia/utils"
 
 	"github.com/astaxie/beego"
 

@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/TruthHun/BookStack/utils"
+	"github.com/china-li-shuo/itshujia/utils"
 
-	"github.com/TruthHun/BookStack/commands"
-	"github.com/TruthHun/BookStack/commands/daemon"
-	_ "github.com/TruthHun/BookStack/routers"
+	"github.com/china-li-shuo/itshujia/commands"
+	"github.com/china-li-shuo/itshujia/commands/daemon"
+	_ "github.com/china-li-shuo/itshujia/routers"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/kardianos/service"
 )

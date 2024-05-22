@@ -67,7 +67,7 @@
 ## v2.8 升级日志
 - [x] 优化内容阅读体验：调整文字行高、章内目录以及优化内容图片预览
 - [x] 优化`html2md`模块
-- [x] 修复上一版本数据库时间字段没有默认值导致的错误[#103](https://github.com/TruthHun/BookStack/issues/103)
+- [x] 修复上一版本数据库时间字段没有默认值导致的错误[#103](https://github.com/china-li-shuo/itshujia/issues/103)
 - [x] 优化阅读时长统计，减少统计误差
 - [x] 升级MySQL、阿里云OSS等相关依赖库
 - [x] 修正工信部备案链接地址（工信部更换域名了）
@@ -252,7 +252,7 @@ sudo docker run -it -p 9300:9300 -p 9200:9200 -v /Users/TruthHun/elasticsearch/d
 
 ## V1.5 升级日志
 - [x] 修复：书籍删除时间过长进而导致删除失败的Bug（启用了MySQL的事务，但事务中SQL语句有select字句查询造成的问题）
-- [x] 修复：书籍成员列表显示不全的Bug(分页问题导致) [#25](https://github.com/TruthHun/BookStack/issues/25)
+- [x] 修复：书籍成员列表显示不全的Bug(分页问题导致) [#25](https://github.com/china-li-shuo/itshujia/issues/25)
 - [x] 修复：书籍标识正则匹配规则不正确的问题
 - [x] 优化：分类在筛选书籍的时候，SEO优化，以文档分类作为`title`等，不再以首页的文案作为`title`
 - [x] 优化：一键采集书籍，自动检测并下载图片
@@ -307,7 +307,7 @@ sudo docker run -it -p 9300:9300 -p 9200:9200 -v /Users/TruthHun/elasticsearch/d
 - [x] 新增：书籍详情页和文档内容页增加分享功能（由于百度分享等现有分享代码不支持`https`，所以使用本地化百度分享源码解决方案 <https://github.com/hrwhisper/baiduShare> ）
 - [x] 新增：使用KaTeX（ <https://github.com/Khan/KaTeX> ），扩展对数学公式的支持
 - [x] 优化：更新HTML转markdown工具[html2md](https://github.com/TruthHun/html2md)，强化转化效果
-- [x] 修复：文档内URL链接大小写问题优化 [issue#20](https://github.com/TruthHun/BookStack/issues/20)
+- [x] 修复：文档内URL链接大小写问题优化 [issue#20](https://github.com/china-li-shuo/itshujia/issues/20)
 - [x] 修复：友链唯一索引问题(默认的字段varchar类型长度(255)过长，导致部分MySQL数据库无法生成唯一索引)
 - [x] 修复：文档内容更新了，执行发布文档操作的时候，文档更新部分的内容仍然不显示的问题
 

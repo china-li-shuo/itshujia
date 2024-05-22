@@ -3,8 +3,8 @@ package models
 import (
 	"strings"
 
-	"github.com/TruthHun/BookStack/utils"
 	"github.com/astaxie/beego/orm"
+	"github.com/china-li-shuo/itshujia/utils"
 )
 
 type AttachmentResult struct {

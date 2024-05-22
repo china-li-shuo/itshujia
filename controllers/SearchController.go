@@ -5,18 +5,18 @@ import (
 	"strings"
 	"time"
 
-	"github.com/TruthHun/BookStack/conf"
-	"github.com/TruthHun/BookStack/utils"
+	"github.com/china-li-shuo/itshujia/conf"
+	"github.com/china-li-shuo/itshujia/utils"
 
-	"github.com/TruthHun/BookStack/models"
 	"github.com/astaxie/beego"
+	"github.com/china-li-shuo/itshujia/models"
 )
 
 type SearchController struct {
 	BaseController
 }
 
-//搜索首页
+// 搜索首页
 func (this *SearchController) Search() {
 	if wd := strings.TrimSpace(this.GetString("wd")); wd != "" {
 		this.Redirect(beego.URLFor("LabelController.Index", ":key", wd), 302)

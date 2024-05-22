@@ -13,9 +13,9 @@ import (
 
 	"github.com/astaxie/beego/orm"
 
-	"github.com/TruthHun/BookStack/utils"
+	"github.com/china-li-shuo/itshujia/utils"
 
-	"github.com/TruthHun/BookStack/models"
+	"github.com/china-li-shuo/itshujia/models"
 
 	"github.com/astaxie/beego"
 )

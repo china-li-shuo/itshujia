@@ -3,8 +3,8 @@ package models
 import (
 	"time"
 
-	"github.com/TruthHun/BookStack/conf"
 	"github.com/astaxie/beego/orm"
+	"github.com/china-li-shuo/itshujia/conf"
 )
 
 type DocumentHistory struct {
@@ -55,7 +55,7 @@ func (m *DocumentHistory) Find(id int) (*DocumentHistory, error) {
 	return m, err
 }
 
-//清空指定文档的历史.
+// 清空指定文档的历史.
 func (m *DocumentHistory) Clear(docId int) error {
 	o := orm.NewOrm()
 	_, err := o.Raw("DELETE from md_document_history WHERE document_id = ?", docId).Exec()
@@ -65,7 +65,7 @@ func (m *DocumentHistory) Clear(docId int) error {
 	return err
 }
 
-//删除历史.
+// 删除历史.
 func (m *DocumentHistory) Delete(historyId, docId int) error {
 	o := orm.NewOrm()
 	_, err := o.QueryTable(m.TableNameWithPrefix()).Filter("history_id", historyId).Filter("document_id", docId).Delete()
@@ -83,7 +83,7 @@ func (m *DocumentHistory) InsertOrUpdate() (history *DocumentHistory, err error)
 	return
 }
 
-//分页查询指定文档的历史.
+// 分页查询指定文档的历史.
 func (m *DocumentHistory) FindToPager(docId, pageIndex, pageSize int) (docs []*DocumentHistorySimpleResult, totalCount int, err error) {
 
 	o := orm.NewOrm()
@@ -114,7 +114,7 @@ WHERE history.document_id = ? ORDER BY history.history_id DESC LIMIT ?,?;`
 	return
 }
 
-//恢复指定历史的文档.
+// 恢复指定历史的文档.
 func (history *DocumentHistory) Restore(historyId, docId, uid int) (err error) {
 	o := orm.NewOrm()
 
