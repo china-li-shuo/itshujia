@@ -7,11 +7,11 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/TruthHun/BookStack/conf"
 	"github.com/astaxie/beego"
+	"github.com/china-li-shuo/itshujia/conf"
 )
 
-//检查最新版本.
+// 检查最新版本.
 func CheckUpdate() {
 
 	resp, err := http.Get("https://api.github.com/repos/TruthHun/BookStack/tags")

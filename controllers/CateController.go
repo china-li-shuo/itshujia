@@ -3,7 +3,7 @@ package controllers
 import (
 	"github.com/astaxie/beego"
 
-	"github.com/TruthHun/BookStack/models"
+	"github.com/china-li-shuo/itshujia/models"
 )
 
 type CateController struct {

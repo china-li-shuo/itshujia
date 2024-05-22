@@ -3,8 +3,8 @@ package controllers
 import (
 	"time"
 
-	"github.com/TruthHun/BookStack/models"
 	"github.com/astaxie/beego"
+	"github.com/china-li-shuo/itshujia/models"
 )
 
 type RecordController struct {
@@ -18,7 +18,7 @@ func (this *RecordController) Prepare() {
 	}
 }
 
-//获取阅读记录列表
+// 获取阅读记录列表
 func (this *RecordController) List() {
 	var (
 		lists   []map[string]interface{}
@@ -56,7 +56,7 @@ func (this *RecordController) List() {
 	})
 }
 
-//重置阅读进度(清空阅读历史)
+// 重置阅读进度(清空阅读历史)
 func (this *RecordController) Clear() {
 	bookId, _ := this.GetInt(":book_id")
 	if bookId > 0 {
@@ -69,7 +69,7 @@ func (this *RecordController) Clear() {
 	this.JsonResult(0, "重置阅读进度成功")
 }
 
-//删除单条阅读历史
+// 删除单条阅读历史
 func (this *RecordController) Delete() {
 	docId, _ := this.GetInt(":doc_id")
 	if docId > 0 {

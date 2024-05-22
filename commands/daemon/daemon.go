@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/TruthHun/BookStack/models"
+	"github.com/china-li-shuo/itshujia/models"
 
-	"github.com/TruthHun/BookStack/commands"
-	"github.com/TruthHun/BookStack/controllers"
 	"github.com/astaxie/beego"
+	"github.com/china-li-shuo/itshujia/commands"
+	"github.com/china-li-shuo/itshujia/controllers"
 	"github.com/kardianos/service"
 )
 

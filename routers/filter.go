@@ -3,13 +3,13 @@ package routers
 import (
 	"encoding/json"
 
-	"github.com/TruthHun/BookStack/utils"
+	"github.com/china-li-shuo/itshujia/utils"
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/context"
 
-	"github.com/TruthHun/BookStack/conf"
-	"github.com/TruthHun/BookStack/models"
+	"github.com/china-li-shuo/itshujia/conf"
+	"github.com/china-li-shuo/itshujia/models"
 )
 
 func init() {

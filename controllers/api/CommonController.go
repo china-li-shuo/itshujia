@@ -11,21 +11,21 @@ import (
 
 	"github.com/TruthHun/html2json/html2json"
 
-	"github.com/TruthHun/BookStack/models/store"
-	"github.com/TruthHun/BookStack/oauth"
+	"github.com/china-li-shuo/itshujia/models/store"
+	"github.com/china-li-shuo/itshujia/oauth"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/TruthHun/gotil/cryptil"
 	"github.com/TruthHun/gotil/util"
 	"github.com/unknwon/com"
 
-	"github.com/TruthHun/BookStack/conf"
+	"github.com/china-li-shuo/itshujia/conf"
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
 
-	"github.com/TruthHun/BookStack/models"
-	"github.com/TruthHun/BookStack/utils"
+	"github.com/china-li-shuo/itshujia/models"
+	"github.com/china-li-shuo/itshujia/utils"
 )
 
 // 不登录也能调用的接口放这里

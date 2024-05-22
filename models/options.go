@@ -4,8 +4,8 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/TruthHun/BookStack/conf"
 	"github.com/astaxie/beego/orm"
+	"github.com/china-li-shuo/itshujia/conf"
 )
 
 var optionCache sync.Map // map[int || string]*Option

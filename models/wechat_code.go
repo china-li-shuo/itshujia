@@ -6,11 +6,11 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/TruthHun/BookStack/models/store"
+	"github.com/china-li-shuo/itshujia/models/store"
 
-	"github.com/TruthHun/BookStack/utils"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
+	"github.com/china-li-shuo/itshujia/utils"
 )
 
 // 微信小程序码记录表

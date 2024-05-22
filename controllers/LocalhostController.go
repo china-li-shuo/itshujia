@@ -5,9 +5,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/TruthHun/BookStack/models"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
+	"github.com/china-li-shuo/itshujia/models"
 )
 
 //只有请求头的host为localhost的才能访问。

@@ -3,13 +3,12 @@ package models
 
 import (
 	"os"
+	"strings"
 	"time"
 
-	"strings"
-
-	"github.com/TruthHun/BookStack/conf"
-	"github.com/TruthHun/BookStack/utils"
 	"github.com/astaxie/beego/orm"
+	"github.com/china-li-shuo/itshujia/conf"
+	"github.com/china-li-shuo/itshujia/utils"
 )
 
 // Attachment struct .

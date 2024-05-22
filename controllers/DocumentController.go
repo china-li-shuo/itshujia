@@ -17,7 +17,7 @@ import (
 
 	"github.com/aliyun/aliyun-oss-go-sdk/oss"
 
-	"github.com/TruthHun/BookStack/utils/html2md"
+	"github.com/china-li-shuo/itshujia/utils/html2md"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/astaxie/beego"
@@ -25,10 +25,10 @@ import (
 	"github.com/boombuler/barcode"
 	"github.com/boombuler/barcode/qr"
 
-	"github.com/TruthHun/BookStack/conf"
-	"github.com/TruthHun/BookStack/models"
-	"github.com/TruthHun/BookStack/models/store"
-	"github.com/TruthHun/BookStack/utils"
+	"github.com/china-li-shuo/itshujia/conf"
+	"github.com/china-li-shuo/itshujia/models"
+	"github.com/china-li-shuo/itshujia/models/store"
+	"github.com/china-li-shuo/itshujia/utils"
 )
 
 var (

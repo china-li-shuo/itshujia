@@ -7,9 +7,9 @@ import (
 
 	"github.com/astaxie/beego"
 
-	"github.com/TruthHun/BookStack/conf"
-	"github.com/TruthHun/BookStack/models"
-	"github.com/TruthHun/BookStack/utils"
+	"github.com/china-li-shuo/itshujia/conf"
+	"github.com/china-li-shuo/itshujia/models"
+	"github.com/china-li-shuo/itshujia/utils"
 )
 
 type HomeController struct {

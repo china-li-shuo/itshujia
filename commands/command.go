@@ -3,22 +3,21 @@ package commands
 import (
 	"database/sql"
 	"encoding/gob"
+	"encoding/json"
 	"flag"
 	"fmt"
+	"log"
 	"os"
 	"path/filepath"
 	"strings"
 
-	"encoding/json"
-	"log"
-
-	"github.com/TruthHun/BookStack/commands/migrate"
-	"github.com/TruthHun/BookStack/conf"
-	"github.com/TruthHun/BookStack/models"
-	"github.com/TruthHun/BookStack/utils"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
 	"github.com/astaxie/beego/orm"
+	"github.com/china-li-shuo/itshujia/commands/migrate"
+	"github.com/china-li-shuo/itshujia/conf"
+	"github.com/china-li-shuo/itshujia/models"
+	"github.com/china-li-shuo/itshujia/utils"
 	"github.com/lifei6671/gocaptcha"
 )
 

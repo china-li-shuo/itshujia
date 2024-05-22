@@ -9,7 +9,7 @@ import (
 	"github.com/astaxie/beego/logs"
 	"github.com/astaxie/beego/orm"
 
-	"github.com/TruthHun/BookStack/conf"
+	"github.com/china-li-shuo/itshujia/conf"
 )
 
 type BookResult struct {

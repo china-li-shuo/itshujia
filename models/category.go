@@ -1,14 +1,13 @@
 package models
 
 import (
+	"errors"
 	"strings"
 
 	"github.com/astaxie/beego"
 
-	"github.com/TruthHun/BookStack/models/store"
-	"github.com/TruthHun/BookStack/utils"
-
-	"errors"
+	"github.com/china-li-shuo/itshujia/models/store"
+	"github.com/china-li-shuo/itshujia/utils"
 
 	"github.com/astaxie/beego/orm"
 )

@@ -1,4 +1,4 @@
-module github.com/TruthHun/BookStack
+module github.com/china-li-shuo/itshujia
 
 go 1.13
 

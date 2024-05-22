@@ -17,8 +17,8 @@ import (
 	"github.com/PuerkitoBio/goquery"
 	"github.com/russross/blackfriday"
 
-	"github.com/TruthHun/BookStack/graphics"
-	"github.com/TruthHun/BookStack/models/store"
+	"github.com/china-li-shuo/itshujia/graphics"
+	"github.com/china-li-shuo/itshujia/models/store"
 
 	"github.com/TruthHun/gotil/filetil"
 	"github.com/TruthHun/gotil/mdtil"
@@ -28,10 +28,10 @@ import (
 	"github.com/astaxie/beego/logs"
 	"github.com/astaxie/beego/orm"
 
-	"github.com/TruthHun/BookStack/conf"
-	"github.com/TruthHun/BookStack/models"
-	"github.com/TruthHun/BookStack/utils"
-	"github.com/TruthHun/BookStack/utils/html2md"
+	"github.com/china-li-shuo/itshujia/conf"
+	"github.com/china-li-shuo/itshujia/models"
+	"github.com/china-li-shuo/itshujia/utils"
+	"github.com/china-li-shuo/itshujia/utils/html2md"
 )
 
 type BookController struct {
