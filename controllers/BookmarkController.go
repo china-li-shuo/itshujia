@@ -5,6 +5,7 @@ import (
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
+
 	"github.com/china-li-shuo/itshujia/models"
 )
 
@@ -19,7 +20,7 @@ func (this *BookmarkController) Prepare() {
 	}
 }
 
-//添加或者移除书签
+// 添加或者移除书签
 func (this *BookmarkController) Bookmark() {
 	docId, _ := this.GetInt(":id")
 	if docId <= 0 {
@@ -41,7 +42,7 @@ func (this *BookmarkController) Bookmark() {
 	this.JsonResult(0, "移除书签成功", insert)
 }
 
-//获取书签列表
+// 获取书签列表
 func (this *BookmarkController) List() {
 	bookId, _ := this.GetInt(":book_id")
 	if bookId <= 0 {
