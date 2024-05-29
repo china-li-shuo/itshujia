@@ -7,10 +7,11 @@ import (
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
+
 	"github.com/china-li-shuo/itshujia/models"
 )
 
-//只有请求头的host为localhost的才能访问。
+// 只有请求头的host为localhost的才能访问。
 type LocalhostController struct {
 	BaseController
 }
@@ -28,8 +29,8 @@ func (c *LocalhostController) Prepare() {
 	}
 }
 
-//渲染markdown.
-//根据文档id来。
+// 渲染markdown.
+// 根据文档id来。
 func (this *LocalhostController) RenderMarkdown() {
 	id, _ := this.GetInt("id")
 	if id > 0 {

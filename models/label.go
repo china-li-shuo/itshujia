@@ -39,7 +39,7 @@ func (m *Label) FindFirst(field string, value interface{}) (*Label, error) {
 	return m, err
 }
 
-//插入或更新标签.
+// 插入或更新标签.
 func (m *Label) InsertOrUpdate(labelName string) (err error) {
 	o := orm.NewOrm()
 	count, _ := o.QueryTable(NewBook().TableNameWithPrefix()).Filter("label", labelName).Count()
@@ -53,7 +53,7 @@ func (m *Label) InsertOrUpdate(labelName string) (err error) {
 	return
 }
 
-//批量插入或更新标签.
+// 批量插入或更新标签.
 func (m *Label) InsertOrUpdateMulti(labels string) {
 	if labels != "" {
 		labelArray := strings.Split(labels, ",")
@@ -65,7 +65,7 @@ func (m *Label) InsertOrUpdateMulti(labels string) {
 	}
 }
 
-//分页查找标签.
+// 分页查找标签.
 func (m *Label) FindToPager(pageIndex, pageSize int, word ...string) (labels []*Label, totalCount int, err error) {
 	var count int64
 	o := orm.NewOrm()

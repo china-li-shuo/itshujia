@@ -33,7 +33,7 @@ func NewCategory() *Category {
 	return &Category{}
 }
 
-//新增分类
+// 新增分类
 func (this *Category) AddCates(pid int, cates string) (err error) {
 	slice := strings.Split(cates, "\n")
 	if len(slice) == 0 {
@@ -56,7 +56,7 @@ func (this *Category) AddCates(pid int, cates string) (err error) {
 	return
 }
 
-//删除分类（如果分类下的书籍不为0，则不允许删除）
+// 删除分类（如果分类下的书籍不为0，则不允许删除）
 func (this *Category) Del(id int) (err error) {
 	var cate = Category{Id: id}
 
@@ -82,9 +82,9 @@ func (this *Category) Del(id int) (err error) {
 	return
 }
 
-//查询所有分类
-//@param            pid         -1表示不限（即查询全部），否则表示查询指定pid的分类
-//@param            status      -1表示不限状态(即查询所有状态的分类)，0表示关闭状态，1表示启用状态
+// 查询所有分类
+// @param            pid         -1表示不限（即查询全部），否则表示查询指定pid的分类
+// @param            status      -1表示不限状态(即查询所有状态的分类)，0表示关闭状态，1表示启用状态
 func (this *Category) GetCates(pid int, status int) (cates []Category, err error) {
 	qs := orm.NewOrm().QueryTable(tableCategory)
 	if pid > -1 {
@@ -98,13 +98,13 @@ func (this *Category) GetCates(pid int, status int) (cates []Category, err error
 	return
 }
 
-//根据字段更新内容
+// 根据字段更新内容
 func (this *Category) UpdateByField(id int, field, val string) (err error) {
 	_, err = orm.NewOrm().QueryTable(tableCategory).Filter("id", id).Update(orm.Params{field: val})
 	return
 }
 
-//查询单个分类
+// 查询单个分类
 func (this *Category) Find(id int) (cate Category) {
 	cate.Id = id
 	orm.NewOrm().Read(&cate)
