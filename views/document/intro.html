@@ -332,7 +332,8 @@
                                     {{/*未登录用户和未付费用户展示标签*/}}
                                     {{if and (eq $.Member.ReadLevel 0)}}
                                             {{if (eq .IsFreeRead 2)}}
-                                                <span class="btn-custom-lock">解锁</span>
+{{/*                                                <span class="btn-custom-lock">解锁</span>*/}}
+                                                    <span class="btn-custom-lock">登陆限免</span>
                                             {{else}}
                                                 <span class="btn-custom">免费</span>
                                             {{end}}

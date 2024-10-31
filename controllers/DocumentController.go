@@ -288,11 +288,11 @@ func (this *DocumentController) Read() {
 		}
 
 		//判断用户是否有免费阅读权限
-		if this.Member.ReadLevel == 0 {
-			//请添加管理员开通权限
-			this.Redirect("/read/help/bookchatapp", 302)
-			return
-		}
+		//if this.Member.ReadLevel == 0 {
+		//	//请添加管理员开通权限
+		//	this.Redirect("/read/help/bookchatapp", 302)
+		//	return
+		//}
 	}
 	//==================================================================================================
 
