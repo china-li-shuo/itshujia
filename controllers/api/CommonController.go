@@ -914,6 +914,7 @@ func (this *CommonController) handleReleaseV1(release string, bookIdentify strin
 
 		query.Find("img").Each(func(i int, contentSelection *goquery.Selection) {
 			if src, ok := contentSelection.Attr("src"); ok {
+				// completeLink方法已经处理了OSS签名URL
 				contentSelection.SetAttr("src", this.completeLink(src))
 			}
 		})

@@ -79,8 +79,16 @@ func (this *StaticController) ProjectsFile() {
 	object := filepath.Join("projects/", strings.TrimLeft(this.GetString(":splat"), "./"))
 	object = strings.ReplaceAll(object, "\\", "/")
 
-	// 不是音频和视频，直接跳转
+	// 不是音频和视频的静态资源（如图片）
 	if !this.isMedia(object) {
+		// 如果配置为私有读，生成签名URL（24小时有效期）
+		if store.ModelStoreOss.IsPrivate {
+			if signedURL, err := store.ModelStoreOss.GetSignURL(object, 86400); err == nil {
+				this.Redirect(signedURL, 302)
+				return
+			}
+		}
+		// 公共读或签名失败，直接使用域名访问
 		this.Redirect(this.OssDomain+"/"+object, 302)
 		return
 	}

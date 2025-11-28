@@ -339,7 +339,7 @@ FIX:
 - [x] 一键导入和一键拉取markdown书籍时，如果出现相同identity的文档，则执行更新，否则为新录入
 - [x] 一键拉取书籍，支持任何来源的zip压缩的markdown书籍的拉取
 - [x] 无刷新加载上下篇阅读文档，优化阅读体验
-- [x] 移除SEO等Go文件中硬编码的"itshujia.com"的域名(因为BookStack，一开始是打算自用的，所以当时写死了)
+- [x] 移除SEO等Go文件中硬编码的"yishanbiji.com"的域名(因为BookStack，一开始是打算自用的，所以当时写死了)
 - [x] 登录和注册验证码优化（使用Beego自带的验证码体系：<https://github.com/astaxie/beego/tree/master/utils/captcha）>
 - [x] 支持本地化存储（改动了很多地方，具体改动，请`git log`查看）。在app.conf中增加了`store_type`配置项，以扩展存储类型，目前扩展的存储类型有本地存储(`local`)和阿里云OSS存储(`oss`)，更多存储类型(`七牛云存储(qiniu)、腾讯云存储(cos)、百度云存储(bos)、又拍云存储(upyun)`)持续开发中.
 - [x] 分页优化

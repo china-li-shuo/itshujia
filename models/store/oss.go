@@ -29,12 +29,14 @@ type Oss struct {
 	AccessKeySecret  string //secret
 	Bucket           string //供文档预览的bucket
 	IsInternal       bool   //是否内网，内网则启用内网endpoint，否则启用外网endpoint
+	IsPrivate        bool   //是否私有读bucket，私有读需要使用签名URL
 	Domain           string
 }
 
 func NewOss() (oss *Oss) {
 	oss = &Oss{
 		IsInternal:       beego.AppConfig.DefaultBool("oss::IsInternal", false),
+		IsPrivate:        beego.AppConfig.DefaultBool("oss::IsPrivate", false),
 		EndpointInternal: beego.AppConfig.String("oss::EndpointInternal"),
 		EndpointOuter:    beego.AppConfig.String("oss::EndpointOuter"),
 		AccessKeyId:      beego.AppConfig.String("oss::AccessKeyId"),
@@ -220,5 +222,29 @@ func (o *Oss) GetFileReader(objKey string) (reader io.ReadCloser, err error) {
 		return
 	}
 	reader, err = bucket.GetObject(objKey)
+	return
+}
+
+// 生成签名URL（用于私有bucket）
+// @param object 文件对象路径
+// @param expires 过期时间（秒）
+// @return signedURL 签名后的URL
+func (o *Oss) GetSignURL(object string, expires int64) (signedURL string, err error) {
+	bucket, err := o.GetBucket()
+	if err != nil {
+		beego.Error("GetBucket error:", err)
+		return "", err
+	}
+	
+	// 清理object路径，去除开头的斜杠
+	object = strings.TrimLeft(object, "/")
+	
+	signedURL, err = bucket.SignURL(object, oss.HTTPGet, expires)
+	if err != nil {
+		beego.Error("SignURL error for object:", object, "error:", err)
+		return "", err
+	}
+	
+	beego.Debug("Generated signed URL for object:", object, "URL:", signedURL)
 	return
 }

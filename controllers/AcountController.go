@@ -466,10 +466,11 @@ func (this *AccountController) FindPassword() {
 			this.JsonResult(6003, "邮件发送失败")
 		}
 
-		if err = utils.SendMail(mailConf, "找回密码", email, body); err != nil {
-			beego.Error(err)
-			this.JsonResult(6003, "邮件发送失败")
-		}
+		//if err = utils.SendMail(mailConf, "找回密码", email, body); err != nil {
+		//	beego.Error(err)
+		//	this.JsonResult(6003, "邮件发送失败")
+		//}
+		utils.SendMail(mailConf, "找回密码", email, body)
 
 		this.JsonResult(0, "ok", this.BaseUrl()+beego.URLFor("AccountController.Login"))
 	}
