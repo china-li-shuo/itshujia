@@ -288,11 +288,11 @@ func (this *DocumentController) Read() {
 		}
 
 		//判断用户是否有免费阅读权限
-		//if this.Member.ReadLevel == 0 {
-		//	//请添加管理员开通权限
-		//	this.Redirect("/read/help/bookchatapp", 302)
-		//	return
-		//}
+		if this.Member.ReadLevel == 0 {
+			//请添加管理员开通权限
+			this.Redirect("/read/help/bookchatapp", 302)
+			return
+		}
 	}
 	//==================================================================================================
 
@@ -303,23 +303,35 @@ func (this *DocumentController) Read() {
 		if err != nil {
 			beego.Error(err)
 		} else {
-			query.Find("img").Each(func(i int, contentSelection *goquery.Selection) {
-				src, ok := contentSelection.Attr("src")
-				if ok {
-					if utils.StoreType == utils.StoreOss && !(strings.HasPrefix(src, "https://") || strings.HasPrefix(src, "http://")) {
-						src = this.OssDomain + "/" + strings.TrimLeft(src, "./")
+		query.Find("img").Each(func(i int, contentSelection *goquery.Selection) {
+			src, ok := contentSelection.Attr("src")
+			if ok {
+				if utils.StoreType == utils.StoreOss && !(strings.HasPrefix(src, "https://") || strings.HasPrefix(src, "http://")) {
+					object := strings.TrimLeft(src, "./")
+					// 如果配置为私有读，使用签名URL
+					if store.ModelStoreOss.IsPrivate {
+						if signedURL, err := store.ModelStoreOss.GetSignURL(object, 3600); err == nil {
+							src = signedURL
+						} else {
+							// 如果签名失败，使用原来的域名方式
+							src = this.OssDomain + "/" + object
+						}
+					} else {
+						// 公共读bucket，直接使用域名
+						src = this.OssDomain + "/" + object
 					}
 				}
-				if authHTTPS {
-					if srcArr := strings.Split(src, "://"); len(srcArr) > 1 {
-						src = "https://" + strings.Join(srcArr[1:], "://")
-					}
+			}
+			if authHTTPS {
+				if srcArr := strings.Split(src, "://"); len(srcArr) > 1 {
+					src = "https://" + strings.Join(srcArr[1:], "://")
 				}
-				contentSelection.SetAttr("src", src)
-				if alt, _ := contentSelection.Attr("alt"); alt == "" {
-					contentSelection.SetAttr("alt", doc.DocumentName+" - 图"+fmt.Sprint(i+1))
-				}
-			})
+			}
+			contentSelection.SetAttr("src", src)
+			if alt, _ := contentSelection.Attr("alt"); alt == "" {
+				contentSelection.SetAttr("alt", doc.DocumentName+" - 图"+fmt.Sprint(i+1))
+			}
+		})
 
 			medias := []string{"video", "audio"}
 			for _, item := range medias {

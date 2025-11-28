@@ -126,7 +126,7 @@ func SendMail(conf *conf.SmtpConf, subject, email string, body string) error {
 // 渲染markdown为html并录入数据库
 func RenderDocumentById(id int) {
 	//使用chromium-browser
-	//	chromium-browser --headless --disable-gpu --screenshot --no-sandbox --window-size=320,480 http://www.itshujia.com
+	//	chromium-browser --headless --disable-gpu --screenshot --no-sandbox --window-size=320,480 http://www.yishanbiji.com
 	link := "http://localhost:" + beego.AppConfig.DefaultString("httpport", "8181") + "/local-render?id=" + strconv.Itoa(id)
 	name := beego.AppConfig.DefaultString("chrome", "chromium-browser")
 	args := []string{"--headless", "--disable-gpu", "--screenshot", "--no-sandbox", "--window-size=320,480", link}
@@ -199,7 +199,7 @@ func RenderCoverByBookIdentify(identify string) (err error) {
 	}
 
 	//使用chromium-browser
-	//	chromium-browser --headless --disable-gpu --screenshot --no-sandbox --window-size=320,480 http://www.itshujia.com
+	//	chromium-browser --headless --disable-gpu --screenshot --no-sandbox --window-size=320,480 http://www.yishanbiji.com
 	link := "http://localhost:" + beego.AppConfig.DefaultString("httpport", "8181") + "/local-render-cover?id=" + identify
 	name := "node"
 	if ok := beego.AppConfig.DefaultBool("puppeteer", false); ok {
@@ -368,7 +368,7 @@ func CrawlHtml2Markdown(urlstr string, contType int, force bool, intelligence in
 
 	imageMap := make(map[string]string)
 
-	if strings.Contains(urlstr, "itshujia.com") {
+	if strings.Contains(urlstr, "yishanbiji.com") {
 		return
 	}
 

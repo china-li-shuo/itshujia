@@ -64,7 +64,7 @@ func (this *ManagerController) Index() {
 			Name:        "calibre",
 			IsInstalled: err == nil,
 			Error:       errCalibre,
-			Message:     "calibre 用于将书籍转换成PDF、epub和mobi ==> <a class='text-danger' target='_blank' href='https://itshujia.com/read/help/Ubuntu.md'>安装教程</a>",
+			Message:     "calibre 用于将书籍转换成PDF、epub和mobi ==> <a class='text-danger' target='_blank' href='https://yishanbiji.com/read/help/Ubuntu.md'>安装教程</a>",
 		})
 
 		errGit := "-"
@@ -97,7 +97,7 @@ func (this *ManagerController) Index() {
 			Name:        "puppeteer",
 			IsInstalled: err == nil,
 			Error:       errPuppeteer,
-			Message:     "puppeteer, node.js的模块，用于将markdown渲染为HTML以及生成电子书封面。 <a class='text-danger' target='_blank' href='https://itshujia.com/read/help/Ubuntu.md'>安装教程</a>",
+			Message:     "puppeteer, node.js的模块，用于将markdown渲染为HTML以及生成电子书封面。 <a class='text-danger' target='_blank' href='https://yishanbiji.com/read/help/Ubuntu.md'>安装教程</a>",
 		})
 	}
 

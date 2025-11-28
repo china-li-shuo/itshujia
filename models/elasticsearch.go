@@ -55,6 +55,30 @@ type ElasticSearchCount struct {
 	Count int `json:"count"`
 }
 
+// Bulk API 响应结构
+type ElasticSearchBulkResponse struct {
+	Took   int  `json:"took"`
+	Errors bool `json:"errors"`
+	Items  []struct {
+		Index struct {
+			Index   string `json:"_index"`
+			Type    string `json:"_type"`
+			Id      string `json:"_id"`
+			Version int    `json:"_version"`
+			Result  string `json:"result"`
+			Status  int    `json:"status"`
+			Error   struct {
+				Type     string `json:"type"`
+				Reason   string `json:"reason"`
+				CausedBy struct {
+					Type   string `json:"type"`
+					Reason string `json:"reason"`
+				} `json:"caused_by"`
+			} `json:"error"`
+		} `json:"index"`
+	} `json:"items"`
+}
+
 // 分词
 type Token struct {
 	EndOffset   int    `json:"end_offset"`
@@ -283,6 +307,12 @@ func (this *ElasticSearchClient) RebuildAllIndex(bookId ...int) {
 		IsRebuildAllIndex = true
 	}
 
+	// 确保索引存在，如果不存在则创建
+	if err := this.Init(); err != nil {
+		beego.Error("初始化 ElasticSearch 索引失败:", err.Error())
+		return
+	}
+
 	pageSize := 1000
 	maxPage := int(1e7)
 
@@ -293,7 +323,7 @@ func (this *ElasticSearchClient) RebuildAllIndex(bookId ...int) {
 	// 更新书籍
 	for page := 1; page < maxPage; page++ {
 		var books []Book
-		fields := []string{"book_id", "book_name", "label", "description", "privately_owned"}
+		fields := []string{"book_id", "book_name", "label", "description", "privately_owned", "vcnt"}
 		q := o.QueryTable(book).Limit(pageSize).Offset((page - 1) * pageSize)
 		if bid > 0 {
 			q.Filter("book_id", bookId).All(&books, fields...)
@@ -419,7 +449,62 @@ func (this *ElasticSearchClient) BuildIndexByBuck(data []ElasticSearchData) (err
 			beego.Info("批量更新索引请求体")
 			beego.Info(body)
 		}
-		err = utils.HandleResponse(this.post(api).Body(body).Response())
+		resp, errResp := this.post(api).Body(body).Response()
+		if errResp != nil {
+			err = errResp
+			return
+		}
+		defer resp.Body.Close()
+
+		// 检查 HTTP 状态码
+		if resp.StatusCode >= 300 || resp.StatusCode < 200 {
+			b, _ := ioutil.ReadAll(resp.Body)
+			err = errors.New(resp.Status + "；" + string(b))
+			return
+		}
+
+		// 读取并解析 bulk API 响应
+		b, readErr := ioutil.ReadAll(resp.Body)
+		if readErr != nil {
+			err = fmt.Errorf("读取响应失败: %v", readErr)
+			return
+		}
+
+		var bulkResp ElasticSearchBulkResponse
+		if jsonErr := json.Unmarshal(b, &bulkResp); jsonErr != nil {
+			err = fmt.Errorf("解析响应失败: %v, 响应内容: %s", jsonErr, string(b))
+			return
+		}
+
+		// 检查是否有错误
+		if bulkResp.Errors {
+			var errorMsgs []string
+			for i, item := range bulkResp.Items {
+				if item.Index.Error.Type != "" {
+					errorMsg := fmt.Sprintf("文档 %d (ID: %s): %s - %s",
+						i, item.Index.Id, item.Index.Error.Type, item.Index.Error.Reason)
+					if item.Index.Error.CausedBy.Type != "" {
+						errorMsg += fmt.Sprintf(" (原因: %s - %s)",
+							item.Index.Error.CausedBy.Type, item.Index.Error.CausedBy.Reason)
+					}
+					errorMsgs = append(errorMsgs, errorMsg)
+				} else if item.Index.Status >= 300 || item.Index.Status < 200 {
+					errorMsg := fmt.Sprintf("文档 %d (ID: %s): HTTP状态码 %d",
+						i, item.Index.Id, item.Index.Status)
+					errorMsgs = append(errorMsgs, errorMsg)
+				}
+			}
+			if len(errorMsgs) > 0 {
+				err = fmt.Errorf("批量索引操作有错误: %s", strings.Join(errorMsgs, "; "))
+				beego.Error("批量索引错误详情:", strings.Join(errorMsgs, "\n"))
+			}
+		} else {
+			// 记录成功信息
+			if orm.Debug {
+				beego.Info(fmt.Sprintf("批量索引成功: 处理了 %d 条数据，耗时 %d ms",
+					len(bulkResp.Items), bulkResp.Took))
+			}
+		}
 	}
 	d := time.Since(now)
 	if d > time.Duration(this.Timeout) {

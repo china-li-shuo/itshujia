@@ -13,9 +13,9 @@ import (
 
 	"github.com/astaxie/beego/orm"
 
-	"github.com/china-li-shuo/itshujia/utils"
-
 	"github.com/china-li-shuo/itshujia/models"
+	"github.com/china-li-shuo/itshujia/models/store"
+	"github.com/china-li-shuo/itshujia/utils"
 
 	"github.com/astaxie/beego"
 )
@@ -241,7 +241,19 @@ func (this *BaseController) completeLink(path string) string {
 	if path == "" {
 		return ""
 	}
-	return utils.JoinURL(models.GetAPIStaticDomain(), strings.ReplaceAll(path, "\\", "/"))
+	
+	path = strings.ReplaceAll(path, "\\", "/")
+	
+	// 如果是使用OSS存储且配置为私有读，且path不是完整URL，则生成签名URL
+	if utils.StoreType == utils.StoreOss && store.ModelStoreOss.IsPrivate && !(strings.HasPrefix(path, "http://") || strings.HasPrefix(path, "https://")) {
+		object := strings.TrimLeft(path, "/")
+		// 图片使用较长的有效期（24小时）
+		if signedURL, err := store.ModelStoreOss.GetSignURL(object, 86400); err == nil {
+			return signedURL
+		}
+	}
+	
+	return utils.JoinURL(models.GetAPIStaticDomain(), path)
 }
 
 // 根据标识查询书籍id，标识可以是数字也可以是字符串
