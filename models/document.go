@@ -420,7 +420,18 @@ func (m *Document) GenerateBook(book *Book, baseUrl string) {
 						pic = src
 					} else {
 						if utils.StoreType == utils.StoreOss {
-							pic = strings.TrimRight(beego.AppConfig.String("oss::Domain"), "/ ") + "/" + strings.TrimLeft(src, "./")
+							object := strings.TrimLeft(src, "./")
+							// 如果配置为私有读，生成签名URL
+							if store.ModelStoreOss.IsPrivate {
+								if signedURL, err := store.ModelStoreOss.GetSignURL(object, 86400); err == nil {
+									pic = signedURL
+								} else {
+									// 如果签名失败，使用原来的域名方式
+									pic = strings.TrimRight(beego.AppConfig.String("oss::Domain"), "/ ") + "/" + object
+								}
+							} else {
+								pic = strings.TrimRight(beego.AppConfig.String("oss::Domain"), "/ ") + "/" + object
+							}
 						} else {
 							pic = baseUrl + src
 						}

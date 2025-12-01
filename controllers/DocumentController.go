@@ -1270,7 +1270,17 @@ func (this *DocumentController) Export() {
 			beego.Error(err, obj)
 			this.JsonResult(1, "下载失败，您要下载的文档当前并未生成可下载文档。")
 		}
-		link = this.OssDomain + "/" + obj
+		// 如果配置为私有读，生成签名URL（下载链接使用较长的有效期，24小时）
+		if store.ModelStoreOss.IsPrivate {
+			if signedURL, err := store.ModelStoreOss.GetSignURL(obj, 86400); err == nil {
+				link = signedURL
+			} else {
+				// 如果签名失败，使用原来的域名方式
+				link = this.OssDomain + "/" + obj
+			}
+		} else {
+			link = this.OssDomain + "/" + obj
+		}
 	case utils.StoreLocal:
 		obj = "uploads/" + obj
 		if err := store.ModelStoreLocal.IsObjectExist(obj); err != nil {

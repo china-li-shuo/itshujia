@@ -107,13 +107,17 @@ func (this *StaticController) ProjectsFile() {
 	// 	this.Abort("404")
 	// }
 
+	// 生成签名URL（音视频文件使用较短的过期时间）
+	signedURL := ""
 	if bucket, err := store.ModelStoreOss.GetBucket(); err == nil {
-		object, _ = bucket.SignURL(object, http.MethodGet, utils.MediaDuration)
-		if slice := strings.Split(object, "/"); len(slice) > 2 {
-			object = strings.Join(slice[3:], "/")
-		}
+		signedURL, _ = bucket.SignURL(object, http.MethodGet, utils.MediaDuration)
 	}
-	this.Redirect(this.OssDomain+"/"+object, 302)
+	// 如果签名成功，直接使用签名URL；否则使用域名方式（公共读或签名失败）
+	if signedURL != "" {
+		this.Redirect(signedURL, 302)
+	} else {
+		this.Redirect(this.OssDomain+"/"+object, 302)
+	}
 }
 
 // 是否是音视频

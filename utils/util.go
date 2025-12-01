@@ -577,7 +577,18 @@ func ShowImg(img string, style ...string) (url string) {
 			//后缀拼接先删除
 			//s = "/" + style[0]
 		}
-		url = strings.TrimRight(beego.AppConfig.String("oss::Domain"), "/ ") + img + s
+		// 如果配置为私有读，生成签名URL
+		if store.ModelStoreOss.IsPrivate {
+			object := strings.TrimLeft(img, "/")
+			if signedURL, err := store.ModelStoreOss.GetSignURL(object, 86400); err == nil {
+				url = signedURL
+			} else {
+				// 如果签名失败，使用原来的域名方式
+				url = strings.TrimRight(beego.AppConfig.String("oss::Domain"), "/ ") + img + s
+			}
+		} else {
+			url = strings.TrimRight(beego.AppConfig.String("oss::Domain"), "/ ") + img + s
+		}
 	case StoreLocal:
 		url = img
 	}

@@ -456,8 +456,17 @@ func (this *BookController) UploadCover() {
 		if err := store.ModelStoreOss.MoveToOss("."+url, osspath, true, false); err != nil {
 			beego.Error(err.Error())
 		} else {
-			//url = strings.TrimRight(beego.AppConfig.String("oss::Domain"), "/ ") + "/" + osspath + "/cover"
-			url = strings.TrimRight(beego.AppConfig.String("oss::Domain"), "/ ") + "/" + osspath
+			// 如果配置为私有读，生成签名URL
+			if store.ModelStoreOss.IsPrivate {
+				if signedURL, err := store.ModelStoreOss.GetSignURL(osspath, 86400); err == nil {
+					url = signedURL
+				} else {
+					// 如果签名失败，使用原来的域名方式
+					url = strings.TrimRight(beego.AppConfig.String("oss::Domain"), "/ ") + "/" + osspath
+				}
+			} else {
+				url = strings.TrimRight(beego.AppConfig.String("oss::Domain"), "/ ") + "/" + osspath
+			}
 		}
 	case utils.StoreLocal:
 		save := book.Cover

@@ -180,7 +180,17 @@ func (this *SettingController) Qrcode() {
 			if err := store.ModelStoreOss.MoveToOss(savePath, savePath, true, false); err != nil {
 				beego.Error(err.Error())
 			} else {
-				url = strings.TrimRight(beego.AppConfig.String("oss::Domain"), "/ ") + "/" + savePath
+				// 如果配置为私有读，生成签名URL
+				if store.ModelStoreOss.IsPrivate {
+					if signedURL, err := store.ModelStoreOss.GetSignURL(savePath, 86400); err == nil {
+						url = signedURL
+					} else {
+						// 如果签名失败，使用原来的域名方式
+						url = strings.TrimRight(beego.AppConfig.String("oss::Domain"), "/ ") + "/" + savePath
+					}
+				} else {
+					url = strings.TrimRight(beego.AppConfig.String("oss::Domain"), "/ ") + "/" + savePath
+				}
 			}
 		case utils.StoreLocal:
 			if err := store.ModelStoreLocal.MoveToStore(savePath, savePath); err != nil {
@@ -310,7 +320,18 @@ func (this *SettingController) Upload() {
 		if err := store.ModelStoreOss.MoveToOss("."+url, strings.TrimLeft(url, "./"), true, false); err != nil {
 			beego.Error(err.Error())
 		} else {
-			url = strings.TrimRight(beego.AppConfig.String("oss::Domain"), "/ ") + url
+			object := strings.TrimLeft(url, "./")
+			// 如果配置为私有读，生成签名URL
+			if store.ModelStoreOss.IsPrivate {
+				if signedURL, err := store.ModelStoreOss.GetSignURL(object, 86400); err == nil {
+					url = signedURL
+				} else {
+					// 如果签名失败，使用原来的域名方式
+					url = strings.TrimRight(beego.AppConfig.String("oss::Domain"), "/ ") + url
+				}
+			} else {
+				url = strings.TrimRight(beego.AppConfig.String("oss::Domain"), "/ ") + url
+			}
 		}
 	case utils.StoreLocal: //本地存储
 		if err := store.ModelStoreLocal.MoveToStore("."+url, strings.TrimLeft(url, "./")); err != nil {
