@@ -235,16 +235,27 @@ func (o *Oss) GetSignURL(object string, expires int64) (signedURL string, err er
 		beego.Error("GetBucket error:", err)
 		return "", err
 	}
+<<<<<<< HEAD
 
 	// 清理object路径，去除开头的斜杠
 	object = strings.TrimLeft(object, "/")
 
+=======
+	
+	// 清理object路径，去除开头的斜杠
+	object = strings.TrimLeft(object, "/")
+	
+>>>>>>> 4ae73b3f0ab661677c8600191f160769944bd2a5
 	signedURL, err = bucket.SignURL(object, oss.HTTPGet, expires)
 	if err != nil {
 		beego.Error("SignURL error for object:", object, "error:", err)
 		return "", err
 	}
+<<<<<<< HEAD
 
+=======
+	
+>>>>>>> 4ae73b3f0ab661677c8600191f160769944bd2a5
 	beego.Debug("Generated signed URL for object:", object, "URL:", signedURL)
 	return
 }
