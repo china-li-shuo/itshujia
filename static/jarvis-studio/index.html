@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jarvis Studio - 独立开发者的极简应用工作室</title>
+    <meta name="description" content="Jarvis Li 独立开发工作室，专注打造 iOS 极简应用：泡支记账、将至、企鹅禅。让生活井井有条，又充满期待。">
+    <meta name="keywords" content="iOS App, 记账, 倒数日, 习惯打卡, 极简应用, 独立开发">
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <!-- 头部导航 -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <span class="logo-icon">🦾</span>
+                <span class="logo-text">Jarvis Studio</span>
+            </div>
+            <nav class="nav">
+                <a href="#apps">产品</a>
+                <a href="#about">关于</a>
+                <a href="#contact">联系</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- 英雄区域 -->
+    <section class="hero">
+        <div class="hero-bg"></div>
+        <div class="container hero-content">
+            <h1 class="hero-title">
+                <span class="gradient-text">极简应用</span>
+                <br>构建生活的秩序感
+            </h1>
+            <p class="hero-subtitle">
+                独立开发者 Jarvis Li 的实验室<br>
+                三款 iOS 应用，解决你的核心需求
+            </p>
+            <div class="hero-cta">
+                <a href="#apps" class="btn btn-primary">探索产品</a>
+                <a href="#contact" class="btn btn-secondary">联系我们</a>
+            </div>
+        </div>
+        <div class="hero-decoration">
+            <div class="floating-card card-1">💰</div>
+            <div class="floating-card card-2">⏳</div>
+            <div class="floating-card card-3">🐧</div>
+        </div>
+    </section>
+
+    <!-- 产品展示 -->
+    <section id="apps" class="apps-section">
+        <div class="container">
+            <h2 class="section-title">产品矩阵</h2>
+            <p class="section-subtitle">每一款都专注解决一个核心问题</p>
+
+            <!-- 泡支记账 -->
+            <div class="app-card app-pobi">
+                <div class="app-card-content">
+                    <div class="app-header">
+                        <img src="images/pobi_icon.png" class="app-icon-img" alt="泡支记账 Icon">
+                        <div class="app-info">
+                            <h3 class="app-name">泡支记账</h3>
+                            <span class="app-tagline">Pobi Budget</span>
+                        </div>
+                    </div>
+                    <p class="app-description">
+                        像呼吸一样自然的极简记账工具。<br>
+                        只记支出，不设预算，不评判消费。
+                    </p>
+                    <div class="app-features">
+                        <div class="feature">
+                            <span class="feature-icon">⚡️</span>
+                            <div class="feature-content">
+                                <h4>轻点背部即记</h4>
+                                <p>轻敲手机背部瞬间弹出，记账快人一步</p>
+                            </div>
+                        </div>
+                        <div class="feature">
+                            <span class="feature-icon">🗣️</span>
+                            <div class="feature-content">
+                                <h4>AI 语音记账</h4>
+                                <p>开口说"中午吃面30"，AI 自动识别分类</p>
+                            </div>
+                        </div>
+                        <div class="feature">
+                            <span class="feature-icon">📸</span>
+                            <div class="feature-content">
+                                <h4>截图即账单</h4>
+                                <p>微信/支付宝/银行流水截图，自动识别录入</p>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="app-slogan">"解决生活账单，回归极简生活。"</p>
+                    <div class="app-download-group">
+                        <a href="https://apps.apple.com/app/id6756515030" class="btn btn-download" target="_blank">
+                            <span class="apple-icon"></span>
+                            App Store 下载
+                        </a>
+                        <div class="qr-code-box" onclick="openQRModal('images/pobi_qr.png', '泡支记账', 'App Store 下载')">
+                            <img src="images/pobi_qr.png" alt="泡支记账 QR Code">
+                            <span>点击放大扫码</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="app-card-visual">
+                    <div class="phone-mockup pobi-mockup">
+                        <img src="images/pobi_showcase_1.jpg" class="mockup-img" alt="泡支记账 预览">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 将至 -->
+            <div class="app-card app-coming reverse">
+                <div class="app-card-content">
+                    <div class="app-header">
+                        <img src="images/coming_icon.png" class="app-icon-img" alt="将至 Icon">
+                        <div class="app-info">
+                            <h3 class="app-name">将至</h3>
+                            <span class="app-tagline">Coming</span>
+                        </div>
+                    </div>
+                    <p class="app-description">
+                        极简的时间管理与仪式感工具。<br>
+                        记录每一份期待与纪念。
+                    </p>
+                    <div class="app-features">
+                        <div class="feature">
+                            <span class="feature-icon">🔄</span>
+                            <div class="feature-content">
+                                <h4>双向记录</h4>
+                                <p>倒数日 (期待未来) + 纪念日 (铭记过去)</p>
+                            </div>
+                        </div>
+                        <div class="feature">
+                            <span class="feature-icon">🔔</span>
+                            <div class="feature-content">
+                                <h4>强提醒系统</h4>
+                                <p>邮件推送 + 通知 + 同步系统日历/待办</p>
+                            </div>
+                        </div>
+                        <div class="feature">
+                            <span class="feature-icon">🎨</span>
+                            <div class="feature-content">
+                                <h4>审美在线</h4>
+                                <p>大数字卡片设计，桌面小组件，多主题切换</p>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="app-slogan">"愿你期待的，都在路上；愿你所盼的，皆已将至。"</p>
+                    <div class="app-download-group">
+                        <a href="https://apps.apple.com/app/id6757380337" class="btn btn-download" target="_blank">
+                            <span class="apple-icon"></span>
+                            App Store 下载
+                        </a>
+                        <div class="qr-code-box" onclick="openQRModal('images/coming_qr.png', '将至', 'App Store 下载')">
+                            <img src="images/coming_qr.png" alt="将至 QR Code">
+                            <span>点击放大扫码</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="app-card-visual">
+                    <div class="phone-mockup coming-mockup">
+                        <img src="images/coming_showcase_1.png" class="mockup-img" alt="将至 预览">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 企鹅禅 -->
+            <div class="app-card app-penguin">
+                <div class="app-card-content">
+                    <div class="app-header">
+                        <img src="images/penguin_icon.png" class="app-icon-img" alt="企鹅禅 Icon">
+                        <div class="app-info">
+                            <h3 class="app-name">企鹅禅</h3>
+                            <span class="app-tagline">PenguinZen</span>
+                        </div>
+                    </div>
+                    <p class="app-description">
+                        简洁克制的日常记录与习惯管理工具。<br>
+                        让坚持变得清晰可见。
+                    </p>
+                    <div class="app-features">
+                        <div class="feature">
+                            <span class="feature-icon">📝</span>
+                            <div class="feature-content">
+                                <h4>自定义事项</h4>
+                                <p>专注练习、学习计划、习惯打卡，随心定制</p>
+                            </div>
+                        </div>
+                        <div class="feature">
+                            <span class="feature-icon">🔢</span>
+                            <div class="feature-content">
+                                <h4>便捷计数</h4>
+                                <p>记录次数 (念诵) 或时长 (冥想/专注)</p>
+                            </div>
+                        </div>
+                        <div class="feature">
+                            <span class="feature-icon">📈</span>
+                            <div class="feature-content">
+                                <h4>可视化回顾</h4>
+                                <p>图表 + 日历视图，清晰看见每一天的坚持</p>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="app-slogan">"简约设计，专注体验，让坚持变得清晰可见。"</p>
+                    <div class="app-download-group">
+                        <a href="https://apps.apple.com/app/id6757262107" class="btn btn-download" target="_blank">
+                            <span class="apple-icon"></span>
+                            App Store 下载
+                        </a>
+                        <div class="qr-code-box" onclick="openQRModal('images/penguin_qr.png', '企鹅禅', 'App Store 下载')">
+                            <img src="images/penguin_qr.png" alt="企鹅禅 QR Code">
+                            <span>点击放大扫码</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="app-card-visual">
+                    <div class="phone-mockup penguin-mockup">
+                        <img src="images/penguin_showcase_1.jpg" class="mockup-img" alt="企鹅禅 预览">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- QR Modal Overlay -->
+    <div id="qr-modal" class="qr-modal" onclick="closeQRModal()">
+        <div class="qr-modal-close">×</div>
+        <div class="qr-modal-content" onclick="event.stopPropagation()">
+            <img id="modal-qr-img" src="" alt="Enlarged QR Code">
+            <h3 id="modal-app-name"></h3>
+            <p id="modal-app-tag">扫描上方二维码下载</p>
+        </div>
+    </div>
+
+    <!-- Script to handle modal -->
+    <script>
+        function openQRModal(imgSrc, appName, appTag) {
+            const modal = document.getElementById('qr-modal');
+            document.getElementById('modal-qr-img').src = imgSrc;
+            document.getElementById('modal-app-name').innerText = appName;
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden'; // Prevent scrolling
+        }
+
+        function closeQRModal() {
+            const modal = document.getElementById('qr-modal');
+            modal.classList.remove('active');
+            document.body.style.overflow = ''; // Restore scrolling
+        }
+
+        // Close on escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeQRModal();
+        });
+    </script>
+
+    <!-- 关于开发者 -->
+    <section id="about" class="about-section">
+        <div class="container">
+            <div class="about-content">
+                <h2 class="section-title">关于 Jarvis Studio</h2>
+                <p class="about-text">
+                    这里是 Jarvis Li 的独立开发实验室 🦾<br><br>
+                    我相信好的工具应该像空气一样存在——<br>
+                    <strong>不打扰，但始终在需要时出现。</strong><br><br>
+                    每一款应用只解决一个核心问题，<br>
+                    用最克制的设计，回归工具的本质。
+                </p>
+                <div class="values">
+                    <div class="value-item">
+                        <span class="value-icon">⚡️</span>
+                        <h4>效率优先</h4>
+                        <p>减少操作步骤，让记录快人一步</p>
+                    </div>
+                    <div class="value-item">
+                        <span class="value-icon">🎯</span>
+                        <h4>专注本质</h4>
+                        <p>只做需要的功能，拒绝功能堆砌</p>
+                    </div>
+                    <div class="value-item">
+                        <span class="value-icon">🤍</span>
+                        <h4>克制设计</h4>
+                        <p>留白与呼吸感，让界面不打扰思考</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 联系方式 -->
+    <section id="contact" class="contact-section">
+        <div class="container">
+            <h2 class="section-title">联系我们</h2>
+            <p class="section-subtitle">有问题反馈或合作意向？随时联系</p>
+            <div class="contact-cards">
+                <div class="contact-card">
+                    <span class="contact-icon">💰</span>
+                    <h4>泡支记账 支持</h4>
+                    <a href="mailto:paozhiapp@foxmail.com">paozhiapp@foxmail.com</a>
+                </div>
+                <div class="contact-card">
+                    <span class="contact-icon">⏳🐧</span>
+                    <h4>将至 / 企鹅禅 支持</h4>
+                    <a href="mailto:yijiapp@qq.com">yijiapp@qq.com</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <span class="logo-icon">🦾</span>
+                    <span class="logo-text">Jarvis Studio</span>
+                </div>
+                <p class="footer-tagline">愿你的生活井井有条，又充满期待。</p>
+                <div class="footer-links">
+                    <a href="https://apps.apple.com/app/id6756515030" target="_blank">泡支记账</a>
+                    <a href="https://apps.apple.com/app/id6757380337" target="_blank">将至</a>
+                    <a href="https://apps.apple.com/app/id6757262107" target="_blank">企鹅禅</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2026 Jarvis Studio. Made with 💙 by Jarvis Li</p>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>
