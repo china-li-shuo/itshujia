@@ -343,10 +343,14 @@ section {
 }
 
 .qr-modal-content img {
-    width: 320px;
-    height: 320px;
+    width: 420px;
+    height: 350px;
+    max-width: 80vw;
+    max-height: 80vw;
+    object-fit: contain;
     display: block;
-    margin-bottom: 20px;
+    margin: 0 auto 16px auto;
+    background: white;
 }
 
 .qr-modal-content h3 {
