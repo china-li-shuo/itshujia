@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>App Store 宣传图生成器</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- 左侧控制面板 -->
+        <aside class="sidebar">
+            <header class="sidebar-header">
+                <h1>🎨 App Store 宣传图</h1>
+                <p>专业竖版宣传图生成工具</p>
+            </header>
+
+            <!-- 模板选择 -->
+            <section class="panel-section">
+                <h2>选择模板</h2>
+                
+                <!-- 浅色系 -->
+                <div class="template-group">
+                    <span class="group-label">浅色</span>
+                    <div class="template-row">
+                        <button class="template-btn active" data-template="minimal-light">
+                            <span class="template-preview" style="background: #ffffff; border: 1px solid #eee;"></span>
+                            <span class="template-label">极简白</span>
+                        </button>
+                        <button class="template-btn" data-template="cream">
+                            <span class="template-preview" style="background: #faf8f5;"></span>
+                            <span class="template-label">奶油米</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 深色系 -->
+                <div class="template-group">
+                    <span class="group-label">深色</span>
+                    <div class="template-row">
+                        <button class="template-btn" data-template="dark-focus">
+                            <span class="template-preview" style="background: linear-gradient(135deg, #1a1a2e, #0f3460);"></span>
+                            <span class="template-label">深邃黑</span>
+                        </button>
+                        <button class="template-btn" data-template="midnight">
+                            <span class="template-preview" style="background: linear-gradient(135deg, #0c1445, #283593);"></span>
+                            <span class="template-label">午夜蓝</span>
+                        </button>
+                        <button class="template-btn" data-template="carbon">
+                            <span class="template-preview" style="background: linear-gradient(135deg, #232526, #414345);"></span>
+                            <span class="template-label">碳黑</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 渐变色系 -->
+                <div class="template-group">
+                    <span class="group-label">渐变</span>
+                    <div class="template-row">
+                        <button class="template-btn" data-template="aurora">
+                            <span class="template-preview" style="background: linear-gradient(135deg, #667eea, #764ba2);"></span>
+                            <span class="template-label">极光紫</span>
+                        </button>
+                        <button class="template-btn" data-template="sunset">
+                            <span class="template-preview" style="background: linear-gradient(135deg, #fa709a, #fee140);"></span>
+                            <span class="template-label">日落橙</span>
+                        </button>
+                        <button class="template-btn" data-template="ocean">
+                            <span class="template-preview" style="background: linear-gradient(135deg, #4facfe, #00f2fe);"></span>
+                            <span class="template-label">海洋蓝</span>
+                        </button>
+                    </div>
+                    <div class="template-row">
+                        <button class="template-btn" data-template="forest">
+                            <span class="template-preview" style="background: linear-gradient(135deg, #56ab2f, #a8e063);"></span>
+                            <span class="template-label">森林绿</span>
+                        </button>
+                        <button class="template-btn" data-template="soft-gradient">
+                            <span class="template-preview" style="background: linear-gradient(135deg, #a8edea, #fed6e3);"></span>
+                            <span class="template-label">青粉渐变</span>
+                        </button>
+                        <button class="template-btn" data-template="peach">
+                            <span class="template-preview" style="background: linear-gradient(135deg, #ffecd2, #fcb69f);"></span>
+                            <span class="template-label">蜜桃粉</span>
+                        </button>
+                    </div>
+                    <div class="template-row">
+                        <button class="template-btn" data-template="lavender">
+                            <span class="template-preview" style="background: linear-gradient(135deg, #e0c3fc, #8ec5fc);"></span>
+                            <span class="template-label">薰衣草</span>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 设备方向 -->
+            <section class="panel-section">
+                <h2>设备方向</h2>
+                <div class="orientation-group">
+                    <button class="orientation-btn active" data-orientation="portrait" title="竖屏">
+                        <svg width="24" height="36" viewBox="0 0 24 36" fill="none">
+                            <rect x="1" y="1" width="22" height="34" rx="4" stroke="currentColor" stroke-width="2"/>
+                            <rect x="8" y="3" width="8" height="3" rx="1.5" fill="currentColor"/>
+                        </svg>
+                        <span>竖屏</span>
+                    </button>
+                    <button class="orientation-btn" data-orientation="landscape" title="横屏">
+                        <svg width="36" height="24" viewBox="0 0 36 24" fill="none">
+                            <rect x="1" y="1" width="34" height="22" rx="4" stroke="currentColor" stroke-width="2"/>
+                            <rect x="30" y="8" width="3" height="8" rx="1.5" fill="currentColor"/>
+                        </svg>
+                        <span>横屏</span>
+                    </button>
+                    <button class="orientation-btn" data-orientation="tilted" title="倾斜">
+                        <svg width="32" height="38" viewBox="0 0 32 38" fill="none">
+                            <rect x="4" y="1" width="22" height="34" rx="4" stroke="currentColor" stroke-width="2" transform="rotate(15 15 18)"/>
+                            <rect x="11" y="5" width="8" height="3" rx="1.5" fill="currentColor" transform="rotate(15 15 6)"/>
+                        </svg>
+                        <span>倾斜</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- 上传截图 -->
+            <section class="panel-section">
+                <h2>上传截图</h2>
+                <div class="upload-zone" id="uploadZone">
+                    <input type="file" id="fileInput" accept="image/png,image/jpeg" hidden>
+                    <label for="fileInput" class="upload-label">
+                        <span class="upload-icon">📱</span>
+                        <span class="upload-text">点击或拖拽上传</span>
+                        <span class="upload-hint">PNG / JPG 竖屏截图</span>
+                    </label>
+                </div>
+                <div class="uploaded-preview" id="uploadedPreview" style="display: none;">
+                    <img id="previewThumb" alt="已上传的截图">
+                    <button class="remove-btn" id="removeBtn">✕</button>
+                </div>
+            </section>
+
+            <!-- 文案编辑 -->
+            <section class="panel-section">
+                <h2>编辑文案</h2>
+                <div class="input-field">
+                    <label for="titleInput">主标题</label>
+                    <textarea id="titleInput" placeholder="输入主标题（支持 emoji 🎉）" maxlength="50" rows="2"></textarea>
+                    <span class="char-counter"><span id="charCount">0</span>/50</span>
+                </div>
+            </section>
+
+            <!-- 自定义设置 - 默认展开 -->
+            <section class="panel-section">
+                <div class="section-header">
+                    <h2>自定义设置</h2>
+                    <button class="toggle-btn" id="toggleSettings">收起</button>
+                </div>
+                <div class="settings-panel" id="settingsPanel" style="display: flex;">
+                    <div class="setting-row">
+                        <label>标题大小</label>
+                        <input type="range" id="titleSizeRange" min="60" max="120" value="88">
+                        <span id="titleSizeVal">88px</span>
+                    </div>
+                    <div class="setting-row">
+                        <label>截图大小</label>
+                        <input type="range" id="screenshotScale" min="75" max="95" value="88">
+                        <span id="screenshotScaleVal">88%</span>
+                    </div>
+                    <div class="setting-row">
+                        <label>圆角大小</label>
+                        <input type="range" id="cornerRadius" min="30" max="80" value="50">
+                        <span id="cornerRadiusVal">50px</span>
+                    </div>
+                    <div class="setting-row">
+                        <label>底部超出</label>
+                        <input type="range" id="bottomOverflow" min="0" max="15" value="8">
+                        <span id="bottomOverflowVal">8%</span>
+                    </div>
+                    <p class="settings-hint">💡 上传截图后可预览调整效果</p>
+                </div>
+            </section>
+
+            <!-- 导出 -->
+            <section class="panel-section export-section">
+                <button class="export-btn" id="exportBtn">
+                    <span>⬇️ 导出 PNG</span>
+                </button>
+                <div class="export-specs">
+                    <div class="spec">
+                        <span class="spec-label">设计尺寸</span>
+                        <span class="spec-value">1080 × 1920</span>
+                    </div>
+                    <div class="spec">
+                        <span class="spec-label">导出尺寸</span>
+                        <span class="spec-value">1242 × 2688</span>
+                    </div>
+                    <div class="spec">
+                        <span class="spec-label">适用设备</span>
+                        <span class="spec-value">iPhone 6.5"</span>
+                    </div>
+                </div>
+            </section>
+        </aside>
+
+        <!-- 右侧画布预览 -->
+        <main class="canvas-area">
+            <div class="canvas-toolbar">
+                <span class="toolbar-title">实时预览</span>
+                <div class="toolbar-actions">
+                    <button class="tool-btn" id="resetBtn" title="重置设置">🔄</button>
+                </div>
+            </div>
+            <div class="canvas-viewport">
+                <canvas id="mainCanvas" width="1080" height="1920"></canvas>
+            </div>
+            <p class="canvas-tip">💡 调整左侧参数，实时预览效果</p>
+        </main>
+    </div>
+
+    <script src="main.js"></script>
+</body>
+</html>
